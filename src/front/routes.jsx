@@ -12,6 +12,7 @@ import { Orders } from "./pages/Orders";
 import { Profile } from "./pages/Profile";
 import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
+import { ChildRegistration } from "./pages/ChildRegistration.jsx";
 
 
 export const router = createBrowserRouter(
@@ -36,6 +37,7 @@ export const router = createBrowserRouter(
                     </PrivateRoute>
                 )}
             />
+            <Route element={<ChildRegistration />} path="/child-registration" />
             <Route path="*" element={<NotFound />} />
         </Route>
     )

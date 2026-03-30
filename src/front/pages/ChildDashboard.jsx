@@ -1,76 +1,153 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getChildDashboard } from "../services/childDashboard";
 
 export const ChildDashboard = () => {
-    const tasks = [
-        { id: 1, title: "Hacer la cama", coins: 10 },
-        { id: 2, title: "Leer 20 minutos", coins: 20 },
-        { id: 3, title: "Pasear al perro", coins: 15 }
-    ];
+    const [data, setData] = useState(null);
+    const [error, setError] = useState(false);
 
-    const rewards = [
-        { id: 1, title: "Entradas al cine", cost: 50 },
-        { id: 2, title: "Camiseta", cost: 100 },
-        { id: 3, title: "Salida con amigos", cost: 150 }
-    ];
+    useEffect(() => {
+        const loadData = async () => {
+            const result = await getChildDashboard(1);
 
-    const childData = {
-        name: "Alex",
-        coins: 120,
-        level: 3,
-        goal: "Nintendo Switch",
-        progress: 60
-    };
+            if (!result) {
+                setError(true);
+                return;
+            }
+
+            setData(result);
+        };
+
+        loadData();
+    }, []);
+
+    if (error) {
+        return (
+            <div className="container py-5">
+                <div className="alert alert-danger">
+                    No se pudo cargar el dashboard del hijo.
+                </div>
+            </div>
+        );
+    }
+
+    if (!data) {
+        return (
+            <div className="container py-5">
+                <p>Cargando dashboard...</p>
+            </div>
+        );
+    }
+
+    const { child, tasks } = data;
 
     return (
-        <div style={{ padding: "20px", maxWidth: "900px", margin: "0 auto" }}>
-            <h1 style={{ marginBottom: "10px" }}>¡Hola, {childData.name}!</h1>
-            <p><strong>Monedas:</strong> {childData.coins}</p>
-            <p><strong>Nivel:</strong> {childData.level}</p>
+        <div className="container py-4">
+            <div className="row justify-content-center">
+                <div className="col-12 col-lg-10">
+                    <div className="card shadow-sm border-0 rounded-4 p-4">
+                        <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                            <div>
+                                <h1 className="h3 mb-1">¡Hola, {child.name}!</h1>
+                                <p className="text-muted mb-0">
+                                    Aquí puedes ver tu progreso.
+                                </p>
+                            </div>
 
-            <div style={{ marginTop: "30px" }}>
-                <h2>Tareas de casa</h2>
-                <ul>
-                    {tasks.map(task => (
-                        <li key={task.id}>
-                            {task.title} (+{task.coins} monedas)
-                        </li>
-                    ))}
-                </ul>
-            </div>
+                            <div className="d-flex gap-3 flex-wrap">
+                                <div className="bg-light rounded-4 px-4 py-3 text-center">
+                                    <div className="small text-muted">Monedas</div>
+                                    <div className="fw-bold fs-4">{child.coins}</div>
+                                </div>
 
-            <div style={{ marginTop: "30px" }}>
-                <h2>Recompensas</h2>
-                <ul>
-                    {rewards.map(reward => (
-                        <li key={reward.id}>
-                            {reward.title} (-{reward.cost} monedas)
-                        </li>
-                    ))}
-                </ul>
-            </div>
+                                <div className="bg-light rounded-4 px-4 py-3 text-center">
+                                    <div className="small text-muted">Nivel</div>
+                                    <div className="fw-bold fs-4">{child.level}</div>
+                                </div>
+                            </div>
+                        </div>
 
-            <div style={{ marginTop: "30px" }}>
-                <h2>Gran Premio</h2>
-                <p><strong>Objetivo:</strong> {childData.goal}</p>
-                <p><strong>Progreso:</strong> {childData.progress}%</p>
+                        <div className="row g-4">
+                            <div className="col-12 col-md-7">
+                                <div className="card h-100 border-0 bg-light rounded-4">
+                                    <div className="card-body p-4">
+                                        <h2 className="h5 mb-3">Tareas de casa</h2>
 
-                <div
-                    style={{
-                        width: "100%",
-                        height: "24px",
-                        backgroundColor: "#e5e7eb",
-                        borderRadius: "12px",
-                        overflow: "hidden",
-                        marginTop: "10px"
-                    }}
-                >
-                    <div
-                        style={{
-                            width: `${childData.progress}%`,
-                            height: "100%",
-                            backgroundColor: "#22c55e"
-                        }}
-                    />
+                                        {tasks.length === 0 ? (
+                                            <p className="text-muted mb-0">
+                                                No hay tareas disponibles.
+                                            </p>
+                                        ) : (
+                                            <div className="d-flex flex-column gap-3">
+                                                {tasks.map((task) => (
+                                                    <div
+                                                        key={task.id}
+                                                        className="d-flex justify-content-between align-items-center bg-white rounded-4 p-3 shadow-sm"
+                                                    >
+                                                        <div>
+                                                            <div className="fw-semibold">
+                                                                {task.title}
+                                                            </div>
+                                                            <div className="small text-muted">
+                                                                Tarea disponible
+                                                            </div>
+                                                        </div>
+
+                                                        <span className="badge text-bg-warning px-3 py-2">
+                                                            +{task.coins}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-12 col-md-5">
+                                <div className="card h-100 border-0 bg-light rounded-4">
+                                    <div className="card-body p-4">
+                                        <h2 className="h5 mb-3">Objetivo</h2>
+
+                                        <div className="bg-white rounded-4 p-3 shadow-sm mb-3">
+                                            <div className="small text-muted mb-1">
+                                                Gran premio
+                                            </div>
+                                            <div className="fw-bold fs-5">
+                                                {child.goal}
+                                            </div>
+                                        </div>
+
+                                        <div className="mb-2 d-flex justify-content-between">
+                                            <span className="small text-muted">
+                                                Progreso
+                                            </span>
+                                            <span className="fw-semibold">
+                                                {child.progress}%
+                                            </span>
+                                        </div>
+
+                                        <div
+                                            className="progress rounded-pill"
+                                            style={{ height: "18px" }}
+                                        >
+                                            <div
+                                                className="progress-bar"
+                                                role="progressbar"
+                                                style={{ width: `${child.progress}%` }}
+                                                aria-valuenow={child.progress}
+                                                aria-valuemin="0"
+                                                aria-valuemax="100"
+                                            />
+                                        </div>
+
+                                        <p className="small text-muted mt-3 mb-0">
+                                            Sigue completando tareas para acercarte a tu meta.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -125,7 +125,7 @@ export const ChildRegistration = ({ onClose, onAssignTasks }) => {
                             type="password" 
                             className={`form-control rounded-pill shadow-sm border-0 ${pin.length > 0 && pin.length !== 4 ? "is-invalid" : ""}`}
                             placeholder="4 dígitos"
-                            maxLength="4" // Validación visual
+                            maxLength="4" 
                             value={pin}
                             onChange={(e) => setPin(e.target.value)}
                             required

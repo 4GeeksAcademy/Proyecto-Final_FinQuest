@@ -13,6 +13,7 @@ import { Orders } from "./pages/Orders";
 import { Profile } from "./pages/Profile";
 import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
+import { ChildRegistration } from "./components/ChildProfileCreation/ChildRegistration.jsx";
 
 
 // Tu archivo de rutas actualizado
@@ -42,6 +43,7 @@ export const router = createBrowserRouter(
                     </PrivateRoute>
                 )}
             />
+            <Route element={<ChildRegistration />} path="/child-registration" />
             {/* <Route
                 path="/parentadmin"
                 element={(

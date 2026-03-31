@@ -12,8 +12,8 @@ import { Orders } from "./pages/Orders";
 import { Profile } from "./pages/Profile";
 import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
-import { ChildRegistration } from "./components/ChildProfileCreation/ChildRegistration.jsx";
 
+import { ChildWizard } from "./components/ChildProfileCreation/ChildWizard.jsx";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -21,6 +21,7 @@ export const router = createBrowserRouter(
             <Route index element={<Home />} />
             <Route path="sign-in" element={<SignIn />} />
             <Route path="sign-up" element={<SignUp />} />
+            
             <Route
                 path="profile"
                 element={(
@@ -29,6 +30,7 @@ export const router = createBrowserRouter(
                     </PrivateRoute>
                 )}
             />
+            
             <Route
                 path="orders"
                 element={(
@@ -37,7 +39,13 @@ export const router = createBrowserRouter(
                     </PrivateRoute>
                 )}
             />
-            <Route element={<ChildRegistration />} path="/child-registration" />
+
+            {/* Aquí está tu ruta mágica. 
+               Ahora apunta al Wizard, que cargará el Paso 1 (Registro) 
+               y al pulsar "Siguiente" cargará el Paso 2 (Metas) sin cambiar de URL.
+            */}
+            <Route path="child-registration" element={<ChildWizard />} />
+
             <Route path="*" element={<NotFound />} />
         </Route>
     )

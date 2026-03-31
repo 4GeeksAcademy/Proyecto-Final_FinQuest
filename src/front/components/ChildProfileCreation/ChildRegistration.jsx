@@ -12,8 +12,8 @@ export const ChildRegistration = ({ onClose, onNextStep }) => {
     const [age, setAge] = useState("");
     const [pin, setPin] = useState("");
     const [selectedAvatar, setSelectedAvatar] = useState(null);
-    const [isSubmitting, setIsSubmitting] = useState(false); 
-    const [isSuccess, setIsSuccess] = useState(false); 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
 
     const avatars = [
         { id: 1, img: cashtorImg, name: "Cashtor Red" },
@@ -32,37 +32,37 @@ export const ChildRegistration = ({ onClose, onNextStep }) => {
          * El objeto 'childData' ya está tipado. 
          * El PIN se envía como string para evitar errores con ceros a la izquierda.
          */
-        const childData = { 
-            name: name, 
-            age: parseInt(age), 
-            pin: pin, 
-            avatar_id: selectedAvatar 
+        const childData = {
+            name: name,
+            age: parseInt(age),
+            pin: pin,
+            avatar_id: selectedAvatar
         };
 
         console.log("🚀 DEBUG: Datos para la API:", childData);
 
         // Simulación de carga (sustituir por fetch mas adelante)
-        await new Promise(resolve => setTimeout(resolve, 1500)); 
-        
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
         setIsSubmitting(false);
         setIsSuccess(true);
     };
 
-    // --- CONTENEDOR DE CENTRADO ABSOLUTO ---
+    // --- RENDERIZADO CONDICIONAL (ESTRUCTURA ÚNICA DE CARD) ---
     return (
-        <div className="container-fluid d-flex justify-content-center align-items-center" style={{ minHeight: "100vh", backgroundColor: "rgba(0,0,0,0.05)" }}>
-            
+        <div className="card shadow-lg border-0 p-4 h-100 w-100 d-flex flex-column justify-content-center animate__animated animate__fadeIn" style={{ borderRadius: "25px", backgroundColor: "#f0fdfa" }}>
+
             {/* A. VISTA DE ÉXITO */}
             {isSuccess ? (
-                <div className="card shadow-lg border-0 p-5 text-center animate__animated animate__fadeIn" style={{ maxWidth: "550px", borderRadius: "25px", backgroundColor: "#f0fdfa" }}>
+                <div className="text-center animate__animated animate__fadeIn">
                     <div className="mb-4">
                         <img src={cashtorImg} alt="Éxito" className="rounded-circle shadow-sm" style={{ width: "120px", height: "120px", border: "5px solid #32a89b" }} />
                     </div>
                     <h2 className="mb-3 fw-bold" style={{ color: "#32a89b" }}>¡Bienvenido, {name}!</h2>
                     <p className="text-secondary mb-5">Perfil creado con éxito. ¿Pasamos a configurar sus metas y tareas?</p>
-                    
+
                     <div className="d-flex flex-column gap-3 w-100">
-                        <button 
+                        <button
                             className="btn btn-lg text-white rounded-pill fw-bold shadow-sm"
                             style={{ backgroundColor: "#32a89b" }}
                             onClick={onNextStep}
@@ -77,15 +77,15 @@ export const ChildRegistration = ({ onClose, onNextStep }) => {
             ) : (
 
                 /* B. FORMULARIO DE REGISTRO (VISTA POR DEFECTO) */
-                <div className="card shadow-lg border-0 p-4 animate__animated animate__fadeIn" style={{ maxWidth: "550px", borderRadius: "25px", backgroundColor: "#f0fdfa" }}>
+                <div className="animate__animated animate__fadeIn">
                     <h2 className="text-center mb-4" style={{ color: "#32a89b", fontWeight: "bold" }}>Crear Perfil del niño/a</h2>
 
                     <form onSubmit={handleSubmit}>
                         <div className="mb-3 text-start">
                             <label className="form-label fw-bold" style={{ color: "#32a89b" }}>Nombre del perfil</label>
-                            <input 
-                                type="text" 
-                                className="form-control rounded-pill shadow-sm border-0" 
+                            <input
+                                type="text"
+                                className="form-control rounded-pill shadow-sm border-0"
                                 placeholder="Nombre del niño/a"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
@@ -96,9 +96,9 @@ export const ChildRegistration = ({ onClose, onNextStep }) => {
                         <div className="row">
                             <div className="col-4 mb-3 text-start">
                                 <label className="form-label fw-bold" style={{ color: "#32a89b" }}>Edad</label>
-                                <input 
-                                    type="number" 
-                                    className="form-control rounded-pill shadow-sm border-0" 
+                                <input
+                                    type="number"
+                                    className="form-control rounded-pill shadow-sm border-0"
                                     placeholder="Edad"
                                     value={age}
                                     onChange={(e) => setAge(e.target.value)}
@@ -107,8 +107,8 @@ export const ChildRegistration = ({ onClose, onNextStep }) => {
                             </div>
                             <div className="col-8 mb-3 text-start">
                                 <label className="form-label fw-bold" style={{ color: "#32a89b" }}>PIN de Seguridad (4 dígitos)</label>
-                                <input 
-                                    type="password" 
+                                <input
+                                    type="password"
                                     className={`form-control rounded-pill shadow-sm border-0 ${pin.length > 0 && pin.length !== 4 ? "is-invalid" : ""}`}
                                     placeholder="****"
                                     maxLength="4"
@@ -124,16 +124,16 @@ export const ChildRegistration = ({ onClose, onNextStep }) => {
                             <label className="form-label fw-bold mb-3" style={{ color: "#32a89b" }}>Selecciona tu avatar</label>
                             <div className="d-flex justify-content-center p-2 flex-wrap gap-2 align-items-center">
                                 {avatars.map((av) => (
-                                    <img 
+                                    <img
                                         key={av.id}
-                                        src={av.img} 
+                                        src={av.img}
                                         alt={av.name}
                                         onClick={() => setSelectedAvatar(av.id)}
                                         className="rounded-circle shadow-sm"
-                                        style={{ 
-                                            width: "90px", 
-                                            height: "90px", 
-                                            cursor: "pointer", 
+                                        style={{
+                                            width: "90px",
+                                            height: "90px",
+                                            cursor: "pointer",
                                             padding: "2px",
                                             border: selectedAvatar === av.id ? "4px solid #32a89b" : "2px solid transparent",
                                             transition: "all 0.2s ease-in-out",
@@ -149,8 +149,8 @@ export const ChildRegistration = ({ onClose, onNextStep }) => {
                             <button type="button" className="btn btn-light rounded-pill w-50 fw-bold text-secondary" onClick={onClose}>
                                 Cancelar
                             </button>
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 className="btn text-white rounded-pill w-50 fw-bold shadow-sm d-flex align-items-center justify-content-center"
                                 style={{ backgroundColor: "#32a89b" }}
                                 disabled={isSubmitting || !name || !age || pin.length !== 4 || !selectedAvatar}

@@ -14,6 +14,7 @@ import { Profile } from "./pages/Profile";
 import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
 import { ChildRegistration } from "./components/ChildProfileCreation/ChildRegistration.jsx";
+import { ProfilesPage } from "./pages/ProfilesPage.jsx";
 
 
 // Tu archivo de rutas actualizado
@@ -23,9 +24,18 @@ export const router = createBrowserRouter(
             <Route index element={<Home />} />
             <Route path="sign-in" element={<SignIn />} />
             <Route path="sign-up" element={<SignUp />} />
+            <Route path="profiles" element={<ProfilesPage />} />
+            {/* <Route
+                path="profiles"
+                element={
+                    <PrivateRoute>
+                    <ProfilesPage />
+                    </PrivateRoute>
+                }
+                /> */}
 
             {/* Ahora está público, pero luego será privado con login */}
-            <Route path="parentadmin" element={<ParentAdmin/>} /> 
+            <Route path="parentadmin" element={<ParentAdmin />} />
 
             <Route
                 path="profile"

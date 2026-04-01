@@ -5,6 +5,7 @@ import {
 } from "react-router-dom";
 
 import { PrivateRoute } from "./components/PrivateRoute";
+import { ParentAdmin } from "../ParentDashboard/pages/ParentAdmin";
 import { Home } from "./pages/Home";
 import { Layout } from "./pages/Layout";
 import { NotFound } from "./pages/NotFound";
@@ -15,13 +16,17 @@ import { SignUp } from "./pages/SignUp";
 
 import { ChildWizard } from "./components/ChildProfileCreation/ChildWizard.jsx";
 
+// Tu archivo de rutas actualizado
 export const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" element={<Layout />} errorElement={<NotFound />}>
             <Route index element={<Home />} />
             <Route path="sign-in" element={<SignIn />} />
             <Route path="sign-up" element={<SignUp />} />
-            
+
+            {/* Ahora está público, pero luego será privado con login */}
+            <Route path="parentadmin" element={<ParentAdmin/>} /> 
+
             <Route
                 path="profile"
                 element={(
@@ -40,13 +45,31 @@ export const router = createBrowserRouter(
                 )}
             />
 
-            {/* Aquí está tu ruta mágica. 
+             {/* Aquí está tu ruta mágica. 
                Ahora apunta al Wizard, que cargará el Paso 1 (Registro) 
                y al pulsar "Siguiente" cargará el Paso 2 (Metas) sin cambiar de URL.
             */}
-            <Route path="child-registration" element={<ChildWizard />} />
-
+            <Route element={<ChildRegistration />} path="/child-registration" />
+            {/* <Route
+                path="/parentadmin"
+                element={(
+                    <PrivateRoute>
+                        <ParentAdmin />
+                    </PrivateRoute>
+                )}
+            /> */}
             <Route path="*" element={<NotFound />} />
         </Route>
-    )
+    ),
+    {
+        /* Aquí es donde agregas las flags para limpiar los warnings de la consola */
+        future: {
+            v7_startTransition: true,
+            v7_relativeSplatPath: true,
+            v7_fetcherPersist: true,
+            v7_normalizeFormMethod: true,
+            v7_partialHydration: true,
+            v7_skipActionErrorRevalidation: true,
+        },
+    }
 );

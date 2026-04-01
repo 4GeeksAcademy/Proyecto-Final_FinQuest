@@ -11,7 +11,7 @@ export const ChildDashboard = () => {
 
     useEffect(() => {
         const loadData = async () => {
-            const result = await getChildDashboard(1);
+            const result = await getChildDashboard(2);
 
             if (!result) {
                 setError(true);
@@ -71,46 +71,21 @@ export const ChildDashboard = () => {
                                 <div className="dashboard-placeholder dashboard-placeholder--streak">
                                     <div className="dashboard-placeholder__streak-header">
                                         <h2 className="dashboard-placeholder__title">
-                                            Tu racha de 3 días seguidos 🔥
+                                            Tu racha de {child.streak} días seguidos 🔥
                                         </h2>
                                     </div>
 
                                     <div className="dashboard-streak">
                                         <div className="dashboard-streak__days">
-                                            <div className="dashboard-streak__day dashboard-streak__day--active">
-                                                <span className="dashboard-streak__check">✓</span>
-                                                <span className="dashboard-streak__label">Lun</span>
-                                            </div>
-
-                                            <div className="dashboard-streak__day dashboard-streak__day--active">
-                                                <span className="dashboard-streak__check">✓</span>
-                                                <span className="dashboard-streak__label">Mar</span>
-                                            </div>
-
-                                            <div className="dashboard-streak__day dashboard-streak__day--active">
-                                                <span className="dashboard-streak__check">✓</span>
-                                                <span className="dashboard-streak__label">Mié</span>
-                                            </div>
-
-                                            <div className="dashboard-streak__day">
-                                                <span className="dashboard-streak__check">✓</span>
-                                                <span className="dashboard-streak__label">Jue</span>
-                                            </div>
-
-                                            <div className="dashboard-streak__day">
-                                                <span className="dashboard-streak__check">✓</span>
-                                                <span className="dashboard-streak__label">Vie</span>
-                                            </div>
-
-                                            <div className="dashboard-streak__day">
-                                                <span className="dashboard-streak__check">✓</span>
-                                                <span className="dashboard-streak__label">Sáb</span>
-                                            </div>
-
-                                            <div className="dashboard-streak__day">
-                                                <span className="dashboard-streak__check">✓</span>
-                                                <span className="dashboard-streak__label">Dom</span>
-                                            </div>
+                                            {["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"].map((dia, index) => (
+                                                <div
+                                                    key={dia}
+                                                    className={`dashboard-streak__day${index < child.streak ? " dashboard-streak__day--active" : ""}`}
+                                                >
+                                                    <span className="dashboard-streak__check">✓</span>
+                                                    <span className="dashboard-streak__label">{dia}</span>
+                                                </div>
+                                            ))}
                                         </div>
 
                                         <div className="dashboard-streak__coins">🪙</div>

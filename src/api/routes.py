@@ -1,6 +1,7 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
+from datetime import datetime
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import (
     create_access_token,
@@ -10,6 +11,7 @@ from flask_jwt_extended import (
 
 from api.models import Order, Product, User, db
 from api.utils import APIException
+from api.models import Child, Order, Product, User, db
 
 
 api = Blueprint("api", __name__)
@@ -192,15 +194,28 @@ def create_order():
 
 @api.route("/child-dashboard/<int:child_id>", methods=["GET"])
 def get_child_dashboard(child_id):
-    mock_child_dashboard = {
-        "child": {
-            "id": child_id,
-            "name": "Alex",
-            "coins": 120,
-            "level": 3,
-            "goal": "Nintendo Switch",
-            "progress": 60
-        },
+    child = db.session.get(Child, child_id)
+    if child is None:
+        raise APIException("Child not found", status_code=404)
+
+    today = datetime.utcnow().date()
+
+    if child.last_login_date is None:
+        child.streak = 1
+    else:
+        last = child.last_login_date.date()
+        if last == today:
+            pass  # ya entró hoy, no cambia nada
+        elif (today - last).days == 1:
+            child.streak += 1  # entró ayer, suma racha
+        else:
+            child.streak = 1  # rompió la racha, reinicia
+
+    child.last_login_date = datetime.utcnow()
+    db.session.commit()
+
+    return jsonify({
+        "child": child.serialize(),
         "tasks": [
             {"id": 1, "title": "Hacer la cama", "coins": 10},
             {"id": 2, "title": "Leer 20 minutos", "coins": 20},
@@ -211,6 +226,6 @@ def get_child_dashboard(child_id):
             {"id": 2, "title": "Camiseta", "cost": 100},
             {"id": 3, "title": "Salida con amigos", "cost": 150}
         ]
-    }
+    }), 200
 
     return jsonify(mock_child_dashboard), 200

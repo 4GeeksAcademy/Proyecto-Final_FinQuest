@@ -12,10 +12,12 @@ db = SQLAlchemy()
 
 class User(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(
+        String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(255), nullable=False)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
-    is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=True)
+    is_active: Mapped[bool] = mapped_column(
+        Boolean(), nullable=False, default=True)
 
     orders: Mapped[list["Order"]] = relationship(
         back_populates="user",
@@ -48,7 +50,8 @@ class Product(db.Model):
     category: Mapped[str] = mapped_column(String(80), nullable=False)
     image_url: Mapped[str] = mapped_column(String(255), nullable=False)
     price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
-    is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=True)
+    is_active: Mapped[bool] = mapped_column(
+        Boolean(), nullable=False, default=True)
 
     orders: Mapped[list["Order"]] = relationship(back_populates="product")
 
@@ -70,9 +73,11 @@ class Order(db.Model):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
-    product_id: Mapped[int] = mapped_column(ForeignKey("products.id"), nullable=False)
+    product_id: Mapped[int] = mapped_column(
+        ForeignKey("products.id"), nullable=False)
     quantity: Mapped[int] = mapped_column(nullable=False, default=1)
-    status: Mapped[str] = mapped_column(String(50), nullable=False, default="paid")
+    status: Mapped[str] = mapped_column(
+        String(50), nullable=False, default="paid")
     unit_price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
@@ -92,4 +97,25 @@ class Order(db.Model):
             "total_price": round(float(self.unit_price) * self.quantity, 2),
             "created_at": self.created_at.isoformat(),
             "product": self.product.serialize()
+        }
+
+
+class Child(db.Model):
+    __tablename__ = "children"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(120), nullable=False)
+    pin: Mapped[str] = mapped_column(String(10), nullable=False)
+    coins: Mapped[int] = mapped_column(nullable=False, default=0)
+    streak: Mapped[int] = mapped_column(nullable=False, default=0)
+    last_login_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "coins": self.coins,
+            "streak": self.streak,
+            "last_login_date": self.last_login_date.isoformat() if self.last_login_date else None
         }

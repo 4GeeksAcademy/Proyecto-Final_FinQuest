@@ -11,7 +11,7 @@ from flask_jwt_extended import (
 
 from api.models import Order, Product, User, db
 from api.utils import APIException
-from api.models import Child, Order, Product, User, db
+from api.models import Child, Order, Product, Task, User, db
 
 
 api = Blueprint("api", __name__)
@@ -214,18 +214,34 @@ def get_child_dashboard(child_id):
     child.last_login_date = datetime.utcnow()
     db.session.commit()
 
+    tasks = Task.query.filter_by(child_id=child_id).all()
+
     return jsonify({
         "child": child.serialize(),
-        "tasks": [
-            {"id": 1, "title": "Hacer la cama", "coins": 10},
-            {"id": 2, "title": "Leer 20 minutos", "coins": 20},
-            {"id": 3, "title": "Pasear al perro", "coins": 15}
-        ],
+        "tasks": [task.serialize() for task in tasks],
         "rewards": [
             {"id": 1, "title": "Entradas al cine", "cost": 50},
             {"id": 2, "title": "Camiseta", "cost": 100},
             {"id": 3, "title": "Salida con amigos", "cost": 150}
         ]
+    }), 200
+
+
+@api.route("/tasks/<int:task_id>/complete", methods=["PATCH"])
+def complete_task(task_id):
+    task = db.session.get(Task, task_id)
+    if task is None:
+        raise APIException("Task not found", status_code=404)
+
+    if task.status == "completed":
+        raise APIException("Task already completed", status_code=400)
+
+    task.status = "completed"
+    db.session.commit()
+
+    return jsonify({
+        "message": "Task marked as completed",
+        "task": task.serialize()
     }), 200
 
     return jsonify(mock_child_dashboard), 200

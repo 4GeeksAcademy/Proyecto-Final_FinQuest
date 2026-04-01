@@ -4,10 +4,12 @@ import { GoalSection } from "../components/GoalSection";
 import { TaskSection } from "../components/TaskSection";
 import { getChildDashboard } from "../services/childDashboard";
 import "../styles/child-dashboard.css";
+import { TaskModal } from "../components/TaskModal";
 
 export const ChildDashboard = () => {
     const [data, setData] = useState(null);
     const [error, setError] = useState(false);
+    const [showTaskModal, setShowTaskModal] = useState(false);
 
     useEffect(() => {
         const loadData = async () => {
@@ -54,6 +56,17 @@ export const ChildDashboard = () => {
     }
 
     const { child, tasks } = data;
+
+    const handleComplete = async (taskId) => {
+        const response = await fetch(
+            `${import.meta.env.VITE_BACKEND_URL}/api/tasks/${taskId}/complete`,
+            { method: "PATCH" }
+        );
+        if (response.ok) {
+            const result = await getChildDashboard(2);
+            if (result) setData(result);
+        }
+    };
 
     return (
         <div className="child-dashboard">
@@ -110,7 +123,16 @@ export const ChildDashboard = () => {
                                     </div>
                                 </div>
 
-                                <TaskSection tasks={tasks} />
+                                <div onClick={() => setShowTaskModal(true)} style={{ cursor: "pointer" }}>
+                                    <TaskSection tasks={tasks} />
+                                </div>
+                                {showTaskModal && (
+                                    <TaskModal
+                                        tasks={tasks}
+                                        onClose={() => setShowTaskModal(false)}
+                                        onComplete={handleComplete}
+                                    />
+                                )}
                             </div>
                         </div>
                     </section>

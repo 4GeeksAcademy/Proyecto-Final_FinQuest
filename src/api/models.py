@@ -119,3 +119,24 @@ class Child(db.Model):
             "streak": self.streak,
             "last_login_date": self.last_login_date.isoformat() if self.last_login_date else None
         }
+
+
+class Task(db.Model):
+    __tablename__ = "tasks"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(String(120), nullable=False)
+    coins: Mapped[int] = mapped_column(nullable=False, default=0)
+    status: Mapped[str] = mapped_column(
+        String(50), nullable=False, default="pending")
+    child_id: Mapped[int] = mapped_column(
+        ForeignKey("children.id"), nullable=False)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "coins": self.coins,
+            "status": self.status,
+            "child_id": self.child_id
+        }

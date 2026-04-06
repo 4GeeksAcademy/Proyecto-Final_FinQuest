@@ -12,10 +12,10 @@ import CashtorCoins from "../assets/img/cashtor_coins.png"; // ejemplo si quiere
 export const ProfilesPage = () => {
   const [selectedProfile, setSelectedProfile] = useState(null);
 
-  const profiles = [
-    { id: 1, name: "Papá", avatar: Cashtor },
-    { id: 2, name: "Dani", avatar: CashtorCoins }
-  ];
+const profiles = [
+  { id: 1, name: "Papá", avatar: Cashtor, pin: "1234", role: "parent" },
+  { id: 2, name: "Dani", avatar: CashtorCoins, pin: "4321", role: "child" }
+];
 
   return (
     <div className="profiles-container">

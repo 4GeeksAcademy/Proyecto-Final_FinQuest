@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import "../style ParentDash/styleLeftPanel.css";
 
 const LeftPanel = ({ parentName, childrenProfiles }) => {
   return (
@@ -9,17 +10,29 @@ const LeftPanel = ({ parentName, childrenProfiles }) => {
       </header>
 
       <nav className="panel-content">
-        <button className="btn-create">
-          + Crear perfil hijo
+        {/* Botón de Crear Perfil */}
+        <button className="btn-create-child-profile">
+          <div className="plus-icon-container">
+            <i className="fa-solid fa-plus"></i>
+          </div>
+          <span>Crear perfil</span>
         </button>
 
+        {/* Lista de Perfiles */}
         <ul className="children-list">
-          {childrenProfiles.map((child) => (
+          {childrenProfiles && childrenProfiles.map((child) => (
             <li key={child.id} className="child-item">
               <span>{child.name}</span>
+
+              {/* Verificación ultra-segura para evitar el Uncaught TypeError */}
+              {child.date && !isNaN(new Date(child.date).getTime()) && (
+                <span>{new Date(child.date).toLocaleString()}</span>
+              )}
             </li>
           ))}
         </ul>
+
+
       </nav>
     </aside>
   );

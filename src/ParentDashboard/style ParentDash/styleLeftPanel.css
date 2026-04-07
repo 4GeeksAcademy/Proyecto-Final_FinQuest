@@ -1,11 +1,11 @@
-/* 1. Contenedor del panel (asegura espacio entre título y contenido) */
+/* --- 1. ESTRUCTURA BASE Y MÓVIL (Mobile First) --- */
+
 .left-panel {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-/* 2. El encabezado (Papá Pérez) arriba */
 .panel-header h2 {
   margin: 0;
   font-size: 1.6rem;
@@ -13,66 +13,145 @@
   letter-spacing: -0.025em;
 }
 
-/* 3. Contenedor de la "Fila" (Botón + UL) */
+/* Contenedor de Botón + Lista */
 .panel-content {
   display: flex;
-  flex-direction: row; /* Alineación horizontal principal */
-  align-items: center; /* Centra verticalmente el botón con los hijos */
-  flex-wrap: wrap;    /* Permite que bajen si hay muchos hijos */
-  gap: 16px;          /* Espacio entre el botón y la lista */
+  flex-direction: row; /* En móvil, botón y lista van en fila */
+  align-items: flex-start;
+  gap: 15px;
+  width: 100%;
 }
 
-/* 4. Estilo del botón */
-.btn-create {
-  padding: 10px 18px;
-  background-color: #4f46e5;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-weight: 600;
+/* Botón Crear Perfil */
+button.btn-create-child-profile {
+  background-color: transparent;
+  border: 2px solid #3dc9b6;
+  display: flex;
+  /* --- MÓVIL (Por defecto) --- */
+  flex-direction: row;      /* Icono al lado del texto */
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px 20px;
+  border-radius: 12px;
   cursor: pointer;
-  white-space: nowrap; /* Evita que el texto del botón se rompa */
-  transition: transform 0.2s;
+  font-weight: bold;
+  font-size: 16px;
+  color: #3dc9b6;
+  white-space: nowrap;
+  transition: all 0.2s;
+  flex-shrink: 0;           /* Importante: evita que se aplaste en la fila horizontal */
 }
 
-.btn-create:hover {
-  transform: translateY(-1px);
-  background-color: #4338ca;
+button.btn-create-child-profile:hover {
+  background-color: #3dc9b6;
+  color: white;
 }
 
-/* 5. La lista de hijos (UL) - Convertida a fila */
+/* --- ESCRITORIO (Pantallas grandes) --- */
+@media (min-width: 1024px) {
+  button.btn-create-child-profile {
+    flex-direction: column;  /* Icono ARRIBA del texto */
+    width: 100%;             /* Ocupa todo el ancho del panel vertical */
+    padding: 20px 20px;      /* Más espacio vertical */
+    height: auto;
+    min-height: 100px;       /* Para que tenga presencia visual similar a los items de hijos */
+  }
+
+  .plus-icon-container {
+    font-size: 1.5rem;       /* El icono se ve más grande al estar arriba */
+    margin-bottom: 5px;
+  }
+}
+
+button.btn-create-child-profile:hover {
+  background-color: #3dc9b6;
+  color: white;
+}
+
+/* Lista de Hijos (POR DEFECTO: Horizontal con Scroll en móvil) */
 .children-list {
   display: flex;
-  flex-direction: row; /* Pone los LI uno al lado del otro */
-  list-style: none;    /* Quita los puntos de la lista */
+  flex-direction: row;
+  flex-wrap: nowrap;      /* Forzamos que no bajen de línea */
+  overflow-x: auto;       /* Scroll horizontal si hay muchos */
+  list-style: none;
+  padding: 0 5px 10px 0;  /* Espacio extra abajo para el scrollbar */
   margin: 0;
-  padding: 0;
-  gap: 10px;           /* Espacio entre cada hijo */
+  gap: 10px;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
 }
 
-/* 6. Cada ítem de hijo (LI) */
+/* Ítem de Hijo Individual */
 .child-item {
   display: flex;
+  flex-direction: column; /* Avatar arriba, nombre abajo */
   align-items: center;
-  padding: 8px 16px;
+  padding: 15px;
   background-color: #f1f5f9;
   border: 1px solid #e2e8f0;
-  border-radius: 10px;
+  border-radius: 15px;
   color: #475569;
-  font-size: 0.95rem;
+  min-width: 120px;      /* Tamaño mínimo en móvil */
   white-space: nowrap;
+  transition: all 0.3s ease;
 }
 
-/* --- Ajuste Responsive --- */
-@media (max-width: 640px) {
-  /* En pantallas muy pequeñas, si no caben de lado, se apilan */
-  .panel-content, .children-list {
-    flex-direction: column;
+.child-item.active {
+  background-color: #fff;
+  border: 2px solid #48c9b0;
+  box-shadow: 0 4px 10px rgba(72, 201, 176, 0.2);
+}
+
+/* Elementos internos del Ítem */
+.avatar-wrapper {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 8px;
+}
+
+.child-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.child-name {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #48c9b0;
+  margin-bottom: 5px;
+}
+
+/* --- 2. MEDIA QUERY: ORDENADOR (Desktop) --- */
+
+@media (min-width: 1024px) {
+  /* Cambiamos el contenedor principal a vertical */
+  .panel-content {
+    flex-direction: column; 
     align-items: stretch;
-    width: 100%;
   }
-  
+
+  /* La lista de hijos ahora se apila hacia abajo */
+  .children-list {
+    flex-direction: column;
+    overflow-x: visible;
+    padding: 0;
+    gap: 15px;
+  }
+
   .child-item {
-    justify-content: center;
+    flex-direction: row;    /* En escritorio: Avatar a la izquierda, nombre a la derecha */
+    justify-content: flex-start;
+    gap: 15px;
+    width: 100%;
+    min-width: unset;
+  }
+
+  .avatar-wrapper {
+    width: 40px;            /* Avatar más pequeño en lista vertical */
+    height: 40px;
+    margin-bottom: 0;
   }
 }

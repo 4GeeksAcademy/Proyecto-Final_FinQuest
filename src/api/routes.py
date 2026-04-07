@@ -8,11 +8,9 @@ from flask_jwt_extended import (
     get_jwt_identity,
     jwt_required
 )
-
-from api.models import Order, Product, User, db, Child, Task, SmallGoal, GrandPrize
 from api.utils import APIException
-from api.models import Child, Order, Product, Task, User, db
-from api.models import Child, Order, Product, Reward, Task, User, db
+
+from api.models import Child, Order, Product, Reward, Task, User, db, SmallGoal, GrandPrize
 
 
 api = Blueprint("api", __name__)

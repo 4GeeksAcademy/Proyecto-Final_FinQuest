@@ -9,7 +9,6 @@ import { ParentAdmin } from "../ParentDashboard/pages/ParentAdmin";
 import { Home } from "./pages/Home";
 import { Layout } from "./pages/Layout";
 import { NotFound } from "./pages/NotFound";
-import { Orders } from "./pages/Orders";
 import { Profile } from "./pages/Profile";
 import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
@@ -48,14 +47,14 @@ export const router = createBrowserRouter(
                 )}
             />
 
-            <Route
+            {/* <Route
                 path="orders"
                 element={(
                     <PrivateRoute>
                         <Orders />
                     </PrivateRoute>
                 )}
-            />
+            /> */}
             <Route
                 path="child-dashboard"
                 element={<ChildDashboard />}

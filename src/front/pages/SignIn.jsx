@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
-
+import beaverImg from "../assets/img/cashtor_coins.png";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { apiRequest } from "../services/api";
 
@@ -47,12 +47,12 @@ export const SignIn = () => {
             });
 
             dispatch({
-    type: "set_notice",
-    payload: `Bienvenido otra vez, ${data.user.name}.`
-});
+                type: "set_notice",
+                payload: `Bienvenido otra vez, ${data.user.name}.`
+            });
 
-// Redirección fija
-window.location.href = "/profiles";
+            // Redirección fija
+            window.location.href = "/profiles";
         } catch (error) {
             dispatch({
                 type: "auth_failure",
@@ -113,9 +113,9 @@ window.location.href = "/profiles";
                 </div>
             </div>
 
-            {/* IMAGEN DERECHA */}
+            {/* Imagen derecha */}
             <div className="login-image">
-                <img src="./assets/img/login-kids.png" alt="Niños aprendiendo finanzas" />
+                <img src={beaverImg} alt="Cashtor" />
             </div>
 
         </div>

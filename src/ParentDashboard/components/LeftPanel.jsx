@@ -16,13 +16,21 @@ const LeftPanel = ({ parentName, childrenProfiles }) => {
           + Crear perfil hijo
         </button>
 
+        {/* Lista de Perfiles */}
         <ul className="children-list">
-          {childrenProfiles.map((child) => (
+          {childrenProfiles && childrenProfiles.map((child) => (
             <li key={child.id} className="child-item">
               <span>{child.name}</span>
+
+              {/* Verificación ultra-segura para evitar el Uncaught TypeError */}
+              {child.date && !isNaN(new Date(child.date).getTime()) && (
+                <span>{new Date(child.date).toLocaleString()}</span>
+              )}
             </li>
           ))}
         </ul>
+
+
       </nav>
 
       {/* --- RENDERIZADO DEL MODAL --- */}

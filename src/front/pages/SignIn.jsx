@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
-import beaverImg from "../assets/img/cashtor_coins.png";
+
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { apiRequest } from "../services/api";
 
@@ -28,45 +28,38 @@ export const SignIn = () => {
         }));
     };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    dispatch({ type: "auth_request" });
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        dispatch({ type: "auth_request" });
 
-    try {
-        const data = await apiRequest("/api/sign-in", {
-            method: "POST",
-            body: JSON.stringify(formData)
-        });
+        try {
+            const data = await apiRequest("/api/sign-in", {
+                method: "POST",
+                body: JSON.stringify(formData)
+            });
 
-        dispatch({
-            type: "auth_success",
-            payload: {
-                token: data.access_token,
-                user: data.user
-            }
-        });
+            dispatch({
+                type: "auth_success",
+                payload: {
+                    token: data.access_token,
+                    user: data.user
+                }
+            });
 
-        // Guardar en localStorage
-        localStorage.setItem("token", data.access_token);
-        localStorage.setItem("user", JSON.stringify(data.user));
+            dispatch({
+    type: "set_notice",
+    payload: `Bienvenido otra vez, ${data.user.name}.`
+});
 
-        console.log("TOKEN guardado:", localStorage.getItem("token"));
-        console.log("USER guardado:", JSON.parse(localStorage.getItem("user")));
-
-        dispatch({
-            type: "set_notice",
-            payload: `Bienvenido otra vez, ${data.user.name}.`
-        });
-
-        // Redirección
-        window.location.href = "/profiles";
-    } catch (error) {
-        dispatch({
-            type: "auth_failure",
-            payload: error.message
-        });
-    }
-};
+// Redirección fija
+window.location.href = "/profiles";
+        } catch (error) {
+            dispatch({
+                type: "auth_failure",
+                payload: error.message
+            });
+        }
+    };
 
     return (
         <div className="login-container">
@@ -120,9 +113,9 @@ export const SignIn = () => {
                 </div>
             </div>
 
-            {/* Imagen derecha */}
+            {/* IMAGEN DERECHA */}
             <div className="login-image">
-                <img src={beaverImg} alt="Cashtor" />
+                <img src="./assets/img/login-kids.png" alt="Niños aprendiendo finanzas" />
             </div>
 
         </div>

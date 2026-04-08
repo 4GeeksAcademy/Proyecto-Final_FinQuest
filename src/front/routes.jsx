@@ -21,7 +21,7 @@ import { ChildWizard } from "./components/ChildProfileCreation/ChildWizard.jsx";
 export const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" element={<Layout />} errorElement={<NotFound />}>
-            <Route index element={<Home />} />
+            <Route path="/" element={<Home />} />
             <Route path="sign-in" element={<SignIn />} />
             <Route path="sign-up" element={<SignUp />} />
             <Route path="login" element={<Login />} />
@@ -47,7 +47,7 @@ export const router = createBrowserRouter(
                 )}
             />
 
-            
+
             <Route
                 path="child-dashboard"
                 element={<ChildDashboard />}

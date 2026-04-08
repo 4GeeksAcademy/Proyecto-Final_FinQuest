@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import LeftPanel from '../components/LeftPanel';
 import CenterPanel from '../components/CenterPanel';
 import RightPanel from '../components/RightPanel';
+import useGlobalReducer from '../../hooks/useGlobalReducer.jsx';
 import "../style ParentDash/stylePAdmin.css";
 
 export const ParentAdmin = () => {

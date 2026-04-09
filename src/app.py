@@ -1,4 +1,4 @@
-import os
+    import os
 from datetime import timedelta
 
 from flask import Flask, jsonify, send_from_directory
@@ -13,18 +13,14 @@ from api.models import db
 from api.routes import api
 from api.utils import APIException, generate_sitemap
 
+
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../dist/')
-
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 
-# Habilitamos CORS de forma total para evitar bloqueos en el entorno de desarrollo
-# Esto permite que el puerto 3000 hable con el 3001 sin restricciones
-CORS(app, resources={r"/api/*": {"origins": "*"}})
-
-# database configuration
+# database condiguration
 db_url = os.getenv("DATABASE_URL")
 if db_url is not None:
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace(
@@ -38,6 +34,8 @@ app.config["JWT_SECRET_KEY"] = os.getenv(
     "super-secret-dev-key-change-me-please"
 )
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=8)
+
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
@@ -70,8 +68,6 @@ def sitemap():
     return send_from_directory(static_file_dir, 'index.html')
 
 # any other endpoint will try to serve it like a static file
-
-
 @app.route('/<path:path>', methods=['GET'])
 def serve_any_other_file(path):
     if not os.path.isfile(os.path.join(static_file_dir, path)):
@@ -81,6 +77,7 @@ def serve_any_other_file(path):
     return response
 
 
+# this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=PORT, debug=True)

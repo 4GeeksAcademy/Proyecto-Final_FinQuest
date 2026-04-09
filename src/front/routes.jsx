@@ -29,14 +29,21 @@ export const router = createBrowserRouter(
                 path="profiles"
                 element={
                     <PrivateRoute>
-                    <ProfilesPage />
+                        <ProfilesPage />
                     </PrivateRoute>
                 }
-                /> */}
+            />
 
-            {/* Ahora está público, pero luego será privado con login */}
-            <Route path="parentadmin" element={<ParentAdmin />} />
 
+
+            <Route
+                path="parentadmin"
+                element={
+                    <PrivateRoute>
+                        <ParentAdmin />
+                    </PrivateRoute>
+                }
+            />
             <Route
                 path="profile"
                 element={(
@@ -49,11 +56,25 @@ export const router = createBrowserRouter(
 
             <Route
                 path="child-dashboard"
-                element={<ChildDashboard />}
+                element={(
+                    <PrivateRoute>
+                        <ChildDashboard />
+                    </PrivateRoute>
+                )}
             />
 
+            <Route
+                path="child-registration"
+                element={(
+                    <PrivateRoute>
+                        <ChildWizard />
+                    </PrivateRoute>
+                )}
+            />
+
+
+
             {/* 🎯 RUTA DEL WIZARD: Aquí es donde ocurre la magia de los 3 pasos */}
-            <Route path="child-registration" element={<ChildWizard />} />
 
             <Route path="*" element={<NotFound />} />
         </Route>

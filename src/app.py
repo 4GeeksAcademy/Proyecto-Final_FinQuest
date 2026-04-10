@@ -35,7 +35,7 @@ app.config["JWT_SECRET_KEY"] = os.getenv(
 )
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=8)
 
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)

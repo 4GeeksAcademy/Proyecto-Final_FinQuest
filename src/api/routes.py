@@ -241,9 +241,9 @@ def redeem_reward(reward_id):
     }), 200
 
     return jsonify(mock_child_dashboard), 200
-# ==========================================
+
 # ENDPOINTS PARA GESTIÓN DE PERFILES INFANTILES
-# ==========================================
+
 
 # NOTA: Se ha comentado @jwt_required temporalmente para pruebas sin Login completo.
 
@@ -353,3 +353,13 @@ def get_children(parent_id):
     results = [child.serialize() for child in children]
 
     return jsonify(results), 200
+
+@api.route("/child/<int:child_id>/small-goals", methods=["GET"])
+def get_child_small_goals(child_id):
+    goals = SmallGoal.query.filter_by(child_id=child_id).all()
+    return jsonify([goal.serialize() for goal in goals]), 200
+
+@api.route("/child/<int:child_id>/grand-prize", methods=["GET"])
+def get_child_grand_prize(child_id):
+    prize = GrandPrize.query.filter_by(child_id=child_id).first()
+    return jsonify(prize.serialize() if prize else {}), 200

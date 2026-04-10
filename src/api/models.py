@@ -42,9 +42,9 @@ class User(db.Model):
             "children": [child.serialize() for child in self.children] if self.children else []
         }
 
-# ==========================================
-# 🆕 MODELOS FINQUEST (SERIALIZADOS)
-# ==========================================
+
+#  MODELOS FINQUEST (SERIALIZADOS)
+
 
 
 class Child(db.Model):

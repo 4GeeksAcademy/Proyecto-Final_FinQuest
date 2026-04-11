@@ -18,7 +18,7 @@ export const ParentAdmin = () => {
 
     const handleApproveTask = async (taskId) => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/tasks/${taskId}/complete`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}api/tasks/${taskId}/complete`, {
                 method: 'PATCH'
             });
             if (response.ok) {

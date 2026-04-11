@@ -4,7 +4,7 @@ const getBackendUrl = () => {
     if (!backendUrl) {
         throw new Error("VITE_BACKEND_URL is not defined in the environment.");
     }
-    return backendUrl.replace(/\/$/, ""); 
+    return backendUrl; 
 };
 
 
@@ -46,7 +46,11 @@ const parseResponse = async (response) => {
 export async function apiRequest(path, options = {}) {
 
     const hasBody = Boolean(options.body);
-    const url = `${getBackendUrl()}/${path}`;
+    
+    // 🛠️ ANTES: `${getBackendUrl()}/${path}` -> Añadía una barra extra
+    // AHORA: Simplemente pegamos el path, porque la barra ya viene en el getBackendUrl()
+    const url = `${getBackendUrl()}${path}`; 
+    
     const response = await fetch(url, {
         ...options,
         headers: buildHeaders(options.headers || {}, hasBody)

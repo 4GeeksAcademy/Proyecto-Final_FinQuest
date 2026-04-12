@@ -51,10 +51,12 @@ export const ChildWizard = ({ onClose }) => {
         };
 
         try {
+            // 👶 1. Payload del niño (Aseguramos que el avatar llegue aquí)
             const childPayload = {
                 name: fullData.child.child.name,
                 age: fullData.child.child.age,
                 pin: fullData.child.child.pin,
+                // Si no se eligió avatar, ponemos uno por defecto
                 avatar: fullData.child.child.avatar || "default_avatar.png"
             };
 
@@ -72,20 +74,18 @@ export const ChildWizard = ({ onClose }) => {
             const childResult = await childResponse.json();
             const childId = childResult.child.id;
 
+            // 🛠️ 2. Guardado masivo de tareas, cupones y premio final
             await Promise.all([
-
                 fetch(`${baseUrl}api/child/${childId}/tasks`, {
                     method: "POST",
                     headers: getHeaders(),
                     body: JSON.stringify(fullData.tasks)
                 }),
-
                 fetch(`${baseUrl}api/child/${childId}/small-goals`, {
                     method: "POST",
                     headers: getHeaders(),
                     body: JSON.stringify(fullData.smallGoals)
                 }),
-
                 fetch(`${baseUrl}api/child/${childId}/grand-prize`, {
                     method: "POST",
                     headers: getHeaders(),
@@ -99,6 +99,7 @@ export const ChildWizard = ({ onClose }) => {
 
             setIsSaving(false);
             
+            // Redirección al panel de administración del padre
             setTimeout(() => {
                 window.location.href = "/parentadmin";
             }, 1500);
@@ -115,6 +116,7 @@ export const ChildWizard = ({ onClose }) => {
             {step === 1 && (
                 <ChildRegistration
                     step={step}
+                    // Recibimos los datos incluyendo el avatar elegido
                     onNextStep={(childData) => handleNext({ child: childData })}
                     onClose={onClose}
                 />

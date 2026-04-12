@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { apiRequest } from "../services/api";
 import { PinModal } from "../components/PinModal";
 import "../ProfilesPage.css";
-import cashtorImg from "../assets/img/Cashtor.jpg"; // imagen fija
+import cashtorImg from "../assets/img/Cashtor.jpg"; 
 
 export const ProfilesPage = () => {
   const [profiles, setProfiles] = useState([]);
@@ -48,23 +48,39 @@ export const ProfilesPage = () => {
 
   return (
     <div className="profiles-container">
-      <h1>¿Quién está usando FinQuest?</h1>
+      <h1 className="profiles-title">¿Quién está usando FinQuest?</h1>
 
       {loading ? (
-        <p>Cargando perfiles...</p>
+        <div className="profiles-loading">
+            <div className="spinner"></div>
+            <p>Cargando perfiles...</p>
+        </div>
       ) : (
         <div className="profiles-grid">
           {profiles.map((profile) => (
             <div
               key={`${profile.role}-${profile.id}`}
-              className="profile-card"
+              className={`profile-card profile-card--${profile.role}`}
               onClick={() => handleProfileClick(profile)}
             >
-              <img src={cashtorImg} alt={profile.name} /> {/* imagen fija */}
-              <p>{profile.name.toUpperCase()}</p>
-              <p>Rol: {profile.role.toUpperCase()}</p>
-              {/* IMPORTANTE: Usamos la propiedad correcta según el rol para que no salga vacío */}
-              <p>PIN: {profile.role === "parent" ? profile.parentalPIN : profile.pin}</p>
+              <div className="profile-card__avatar-wrapper">
+                <img 
+                  src={profile.role === "child" ? (profile.avatar || cashtorImg) : cashtorImg} 
+                  alt={profile.name} 
+                  className="profile-card__img"
+                  onError={(e) => { e.target.src = cashtorImg; }}
+                />
+              </div>
+              
+              <div className="profile-card__info">
+                <p className="profile-card__name">{profile.name.toUpperCase()}</p>
+                <p className="profile-card__role">
+                    {profile.role === "parent" ? "👨‍👩‍👧 PADRE/MADRE" : "👦 MODO NIÑO"}
+                </p>
+                <span className="profile-card__pin-hint">
+                    PIN: {profile.role === "parent" ? profile.parentalPIN : profile.pin}
+                </span>
+              </div>
             </div>
           ))}
         </div>

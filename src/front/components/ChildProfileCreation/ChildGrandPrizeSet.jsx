@@ -1,9 +1,10 @@
 import React, { useState, useRef } from "react";
 import { ProgressBar } from "./ProgressBar";
-import cashtorImg from "../../assets/img/Cashtor.jpg"; // 🔴 Importamos el avatar
+import defaultAvatar from "../../assets/img/Profiles/Children/child_9.png";
 import "./ChildWizard.css";
 
 export const ChildGrandPrizeSet = ({ onBack, onNextStep, step, formData }) => {
+    const selectedAvatar = formData?.child?.child?.avatar || formData?.child?.avatar || defaultAvatar;
     const [goalName, setGoalName] = useState("");
     const [goalAmount, setGoalAmount] = useState(5000); 
     const [preview, setPreview] = useState(null);
@@ -25,19 +26,17 @@ export const ChildGrandPrizeSet = ({ onBack, onNextStep, step, formData }) => {
         onNextStep({
             name: goalName,
             coins: parseInt(goalAmount) || 0,
-            image_url: "" 
+            image_url: preview || "" 
         });
     };
 
     return (
         <div className="wizard-step-wrapper animate__animated animate__fadeIn">
             
-            {/* CABECERA */}
             <div className="wizard-header">
-                {/* 🔴 SOLO EL AVATAR CORONANDO EL MODAL */}
                 <div style={{ display: "flex", justifyContent: "center", marginBottom: "15px" }}>
                     <img 
-                        src={cashtorImg} 
+                        src={selectedAvatar} 
                         alt="Avatar" 
                         style={{ 
                             width: "65px", 
@@ -47,13 +46,13 @@ export const ChildGrandPrizeSet = ({ onBack, onNextStep, step, formData }) => {
                             objectFit: "cover",
                             boxShadow: "0 4px 10px rgba(50, 168, 155, 0.2)" 
                         }} 
+                        onError={(e) => { e.target.src = defaultAvatar; }}
                     />
                 </div>
                 
-                <h2 className="wizard-title" style={{ marginBottom: "10px" }}>¡Gran Premio!</h2>
+                <h2 className="wizard-title" style={{ marginBottom: "10px" }}>¡Gran Premio Final!</h2>
             </div>
 
-            {/* CUERPO CENTRAL */}
             <div className="wizard-body">
                 <div style={{ display: "flex", gap: "15px", marginBottom: "15px" }}>
                     <div style={{ flex: "1" }}>
@@ -105,13 +104,12 @@ export const ChildGrandPrizeSet = ({ onBack, onNextStep, step, formData }) => {
                         <div style={{ textAlign: "center" }}>
                             <span style={{ fontSize: "3rem" }}>📸</span>
                             <p style={{ margin: "10px 0 0 0", fontWeight: "bold", color: "#32a89b" }}>Subir foto del premio</p>
-                            <p style={{ fontSize: "0.75rem", color: "#94a3b8", marginTop: "5px" }}>Formato JPG o PNG (Max 2MB)</p>
+                            <p style={{ fontSize: "0.75rem", color: "#94a3b8", marginTop: "5px" }}>Hazlo real: ¡sube una foto de lo que quiere!</p>
                         </div>
                     )}
                 </div>
             </div>
 
-            {/* PIE FIJO */}
             <div className="wizard-footer">
                 <ProgressBar step={step} />
                 <div className="footer-buttons">
@@ -124,7 +122,7 @@ export const ChildGrandPrizeSet = ({ onBack, onNextStep, step, formData }) => {
                         onClick={handleFinalClick} 
                         disabled={!goalName || goalAmount <= 0}
                     >
-                        ¡Finalizar!
+                        ¡Ver resumen!
                     </button>
                 </div>
             </div>

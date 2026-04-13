@@ -15,14 +15,18 @@ export const PinModal = ({ profile, onClose }) => {
       return;
     }
 
-    if (pin === profile.parentalPIN) {
+    const correctPin = profile.role === "parent" ? profile.parentalPIN : profile.pin;
+
+    // Convertimos ambos a String para asegurar la comparación
+    if (String(pin) === String(correctPin)) {
       setError("");
 
       if (profile.role === "parent") {
         navigate("/parentadmin");
       } else if (profile.role === "child") {
+
         dispatch({ type: "set_child", payload: profile });
-        navigate("/child-dashboard");
+        navigate(`/child-dashboard/${profile.id}`);
       }
 
       onClose();

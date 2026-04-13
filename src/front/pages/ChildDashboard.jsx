@@ -8,20 +8,26 @@ import { TaskModal } from "../components/TaskModal";
 import { RewardModal } from "../components/RewardModal";
 import monedas3 from "../assets/img/monedas3.png";
 import tickets from "../assets/img/tickets.png";
+import useGlobalReducer from "../hooks/useGlobalReducer";  
 
 export const ChildDashboard = () => {
     const [data, setData] = useState(null);
     const [error, setError] = useState(false);
     const [showTaskModal, setShowTaskModal] = useState(false);
     const [showRewardModal, setShowRewardModal] = useState(false);
+    const { store } = useGlobalReducer();  
+    const childId = store.currentChild?.id;  
 
     console.log(data);
 
-    //Te escucho :D vamos a otra meet :D
-    //PASO LINK 
     useEffect(() => {
         const loadData = async () => {
-            const result = await getChildDashboard(2);
+            if (!childId) {
+                setError(true);
+                return;
+            }
+
+            const result = await getChildDashboard(childId);  
 
             if (!result) {
                 setError(true);
@@ -32,7 +38,7 @@ export const ChildDashboard = () => {
         };
 
         loadData();
-    }, []);
+    }, [childId]);  // 👈 cambiado
 
     if (error) {
         return (
@@ -71,7 +77,7 @@ export const ChildDashboard = () => {
             { method: "PATCH" }
         );
         if (response.ok) {
-            const result = await getChildDashboard(1);
+            const result = await getChildDashboard(childId);  
             if (result) setData(result);
         }
     };
@@ -82,7 +88,7 @@ export const ChildDashboard = () => {
             { method: "POST" }
         );
         if (response.ok) {
-            const result = await getChildDashboard(1);
+            const result = await getChildDashboard(childId);  
             if (result) setData(result);
         }
     };

@@ -1,10 +1,8 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../assets/img/logo.png";
-
 import useGlobalReducer from "../hooks/useGlobalReducer";
-import logoImg from "../assets/img/logo.png";
-import "./Navbar.css"; // Asegúrate de que este import sigue ahí
+import "./Navbar.css";
 
 export const Navbar = () => {
     const { store, dispatch } = useGlobalReducer();
@@ -21,7 +19,7 @@ export const Navbar = () => {
                 <NavLink className="" to="/">
                     <img src={logo} alt="FinQuest Logo" className="logo"/>
                 </NavLink>
-                
+
                 <button
                     className="navbar-toggler border-0"
                     type="button"
@@ -33,20 +31,10 @@ export const Navbar = () => {
 
                 <div className="collapse navbar-collapse" id="mainNavbar">
                     <div className="navbar-nav gap-lg-2 ms-auto align-items-lg-center">
-                        <NavLink className="nav-link" to="/">
-                            Inicio
-                        </NavLink>
+                        <NavLink className="nav-link" to="/">Inicio</NavLink>
+                        <NavLink className="nav-link" to="/">Nosotros</NavLink>
+                        <NavLink className="nav-link" to="/">Contacto</NavLink>
 
-                        <NavLink className="nav-link" to="/">
-                            Nosotros
-                        </NavLink>
-
-                        <NavLink className="nav-link" to="/">
-                            Contacto
-                        </NavLink>
-
-                    <div className="navbar-nav ms-auto align-items-lg-center">
-                        
                         {store.token ? (
                             <>
                                 <NavLink className="nav-link nav-link-custom" to="/parentadmin">
@@ -61,16 +49,11 @@ export const Navbar = () => {
                             </>
                         ) : (
                             <>
-                                <NavLink className="btn btn-primary-soft" to="/sign-in">
+                                <NavLink className="btn btn-primary-soft rounded-pill px-4 ms-lg-2" to="/sign-in">
                                     Iniciar Sesión
                                 </NavLink>
-                                <NavLink className="btn btn-primary-yellow" to="/sign-up">
+                                <NavLink className="btn btn-primary-yellow rounded-pill px-4 ms-lg-2" to="/sign-up">
                                     Registrarse
-                                <NavLink className="nav-link nav-link-custom" to="/sign-in">
-                                    Entrar
-                                </NavLink>
-                                <NavLink className="btn btn-primary-soft rounded-pill px-4 ms-lg-2" to="/sign-up">
-                                    Crear Cuenta
                                 </NavLink>
                             </>
                         )}

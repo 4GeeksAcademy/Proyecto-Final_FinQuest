@@ -6,6 +6,7 @@ import { ChildGrandPrizeSet } from "./ChildGrandPrizeSet";
 import { ChildSummary } from "./ChildSummary"; 
 import "./ChildWizard.css";
 import { useNavigate } from "react-router-dom";
+import useGlobalReducer from "../../hooks/useGlobalReducer.jsx";
 
 export const ChildWizard = ({ onClose }) => {
     const [step, setStep] = useState(1);
@@ -18,6 +19,7 @@ export const ChildWizard = ({ onClose }) => {
         grandPrize: null
     });
     const navigate = useNavigate();
+    const { dispatch } = useGlobalReducer();
 
     const handleNext = (newData) => {
         setFormData(prev => ({ ...prev, ...newData }));
@@ -40,8 +42,9 @@ export const ChildWizard = ({ onClose }) => {
         setSaveError(null);
         
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
-        const token = localStorage.getItem("token");
-        const user = JSON.parse(localStorage.getItem("user"));
+        const session = JSON.parse(localStorage.getItem("jwt-example-session") || "{}");
+        const token = session.token;
+        const userObject = session.user;
 
         if (!user?.id) {
             setSaveError("No se encontró la sesión del usuario.");
@@ -113,6 +116,14 @@ export const ChildWizard = ({ onClose }) => {
                 throw new Error("El perfil se creó, pero hubo un error guardando las tareas o premios.");
             }
 
+            // Si todo va bien, quitamos el estado de "Cargando"
+            const meResponse = await fetch(`${baseUrl}api/me`, {
+                headers: getHeaders()
+            });
+            if (meResponse.ok) {
+                const meData = await meResponse.json();
+                dispatch({ type: "auth_success", payload: { token, user: meData.user } });
+            }
             setIsSaving(false);
             
             // Redirección con éxito

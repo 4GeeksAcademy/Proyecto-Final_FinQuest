@@ -9,13 +9,11 @@ import { ParentAdmin } from "../ParentDashboard/pages/ParentAdmin";
 import { Home } from "./pages/Home";
 import { Layout } from "./pages/Layout";
 import { NotFound } from "./pages/NotFound";
-import { Profile } from "./pages/Profile";
+// 🟢 Eliminada la importación de Profile
 import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
 import { ChildDashboard } from "./pages/ChildDashboard";
-import { Login } from "./pages/Login";
 import { ProfilesPage } from "./pages/ProfilesPage.jsx";
-import { ChildRegistration } from "./components/ChildProfileCreation/ChildRegistration.jsx";
 import { ChildWizard } from "./components/ChildProfileCreation/ChildWizard.jsx";
 
 export const router = createBrowserRouter(
@@ -24,7 +22,8 @@ export const router = createBrowserRouter(
             <Route path="/" element={<Home />} />
             <Route path="sign-in" element={<SignIn />} />
             <Route path="sign-up" element={<SignUp />} />
-            <Route path="profiles" element={<ProfilesPage />} />
+            
+            {/* 🟢 Selector de perfiles (Sustituye a la lógica de "Profile" antiguo) */}
             <Route
                 path="profiles"
                 element={
@@ -34,8 +33,6 @@ export const router = createBrowserRouter(
                 }
             />
 
-
-
             <Route
                 path="parentadmin"
                 element={
@@ -44,18 +41,11 @@ export const router = createBrowserRouter(
                     </PrivateRoute>
                 }
             />
-            <Route
-                path="profile"
-                element={(
-                    <PrivateRoute>
-                        <Profile />
-                    </PrivateRoute>
-                )}
-            />
 
+            {/* 🔴 RUTA /PROFILE ELIMINADA */}
 
             <Route
-                path="child-dashboard"
+                path="child-dashboard/:childId" 
                 element={(
                     <PrivateRoute>
                         <ChildDashboard />
@@ -71,8 +61,6 @@ export const router = createBrowserRouter(
                     </PrivateRoute>
                 )}
             />
-
-
 
             <Route path="*" element={<NotFound />} />
         </Route>

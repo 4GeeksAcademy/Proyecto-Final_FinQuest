@@ -15,10 +15,11 @@ export const GoalSection = ({ child }) => {
                 <p className="goal-card__name">{grandPrize?.name || "Sin gran premio"}</p>
 
                 <div className="goal-card__hero">
-                    <div className="goal-card__image goal-card__image--emoji">
-                        {grandPrize?.image_url || "🏆"}
-                    </div>
-
+                    <img
+                        className="goal-card__image"
+                        src={grandPrize?.image_url?.startsWith("http") ? grandPrize.image_url : "https://cdn-icons-png.flaticon.com/512/3112/3112946.png"}
+                        alt={grandPrize?.name || "Gran Premio"}
+                    />
                     <div className="goal-card__price">
                         <span className="goal-card__price-number">{prizeCoins.toLocaleString()}</span>
                         <span className="goal-card__price-label">Monedas</span>
@@ -32,7 +33,6 @@ export const GoalSection = ({ child }) => {
                             style={{ width: `${progress}%` }}
                         ></div>
                     </div>
-
                     <img
                         className="goal-card__coins-image"
                         src={monedas}
@@ -49,7 +49,8 @@ export const GoalSection = ({ child }) => {
                 </p>
 
                 <div className="goal-card__minigame">
-                    {/* Minijuego — pendiente de integración */}
+                    <p className="goal-card__minigame-label">🎮 Minijuego</p>
+                    <p className="goal-card__minigame-hint">Próximamente...</p>
                 </div>
             </div>
         </section>

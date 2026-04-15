@@ -201,16 +201,6 @@ export const ChildDashboard = () => {
                                 >
                                     <TaskSection tasks={tasks} />
                                 </div>
-
-                                {showTaskModal && (
-                                    <div onClick={e => e.stopPropagation()}>
-                                        <TaskModal
-                                            tasks={tasks}
-                                            onClose={() => setShowTaskModal(false)}
-                                            onComplete={handleComplete}
-                                        />
-                                    </div>
-                                )}
                             </div>
                         </div>
                     </section>

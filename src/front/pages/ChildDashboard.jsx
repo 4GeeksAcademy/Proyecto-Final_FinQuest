@@ -188,11 +188,13 @@ export const ChildDashboard = () => {
                                 </div>
 
                                 {showTaskModal && (
-                                    <TaskModal
-                                        tasks={tasks}
-                                        onClose={() => setShowTaskModal(false)}
-                                        onComplete={handleComplete}
-                                    />
+                                    <div onClick={e => e.stopPropagation()}>
+                                        <TaskModal
+                                            tasks={tasks}
+                                            onClose={() => setShowTaskModal(false)}
+                                            onComplete={handleComplete}
+                                        />
+                                    </div>
                                 )}
                             </div>
                         </div>

@@ -64,7 +64,7 @@ export const ChildDashboard = () => {
     }
 
     const { child, tasks, rewards } = data;
-
+    
     const handleComplete = async (taskId) => {
         const baseUrl = import.meta.env.VITE_BACKEND_URL;
         try {

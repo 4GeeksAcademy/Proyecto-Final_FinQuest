@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { getTaskIcon } from "../../front/Utils/getTaskIcon"; // 🟢 Importamos la función mágica
+import { getTaskIcon, getCouponIcon, getGrandPrizeIcon } from "../../front/Utils/getTaskIcon"; // 🟢 Importamos todo
 import "../style ParentDash/styleCePanel.css";
 
 const CenterPanel = ({
@@ -22,27 +22,20 @@ const CenterPanel = ({
     const [selectedItemId, setSelectedItemId] = useState(null);
     const panelRef = useRef(null);
 
-    // --- PALETA DE COLORES UNIFICADA ---
-    const statusStyles = {
-        aprobada: { bg: "#eafaf1", color: "#28a745", label: "Aprobada" },
-        desaprobada: { bg: "#fdf2f2", color: "#dc3545", label: "Desaprobada" },
-        pendiente: { bg: "#fff9db", color: "#f08c00", label: "Pendiente" },
-        porHacer: { bg: "#e7f5ff", color: "#007bff", label: "Por hacer" }
+    // --- ESTILOS CORREGIDOS ---
+    const badgeStyle = { // ⬅️ Cambiado de badgeBaseStyle a badgeStyle para que coincida con el JSX
+        fontSize: '0.7rem', 
+        padding: '3px 10px', 
+        borderRadius: '12px', 
+        fontWeight: '600', 
+        marginLeft: '10px', 
+        display: 'inline-block', 
+        verticalAlign: 'middle', 
+        border: 'none' 
     };
 
-    /**
-     * CORRECCIÓN: Ahora solo formatea la fecha asignada a la tarea/instancia.
-     * Se eliminó el fallback a la fecha de creación o fecha actual.
-     */
-    const formatDate = (dateValue) => {
-        if (!dateValue) return "Sin fecha";
-        const d = new Date(dateValue);
-        return d.toLocaleDateString('es-ES', { 
-            day: '2-digit', 
-            month: 'short',
-            year: 'numeric'
-        });
-    };
+    const undoButtonStyle = { background: 'none', border: 'none', color: '#ff0019', cursor: 'pointer', padding: '5px' };
+    const redeemButtonStyle = { padding: '4px 12px', cursor: 'pointer', borderRadius: '4px', border: 'none', backgroundColor: '#3dc9b6', color: '#fff', fontSize: '0.85rem', fontWeight: 'bold' };
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -84,11 +77,6 @@ const CenterPanel = ({
         );
     };
 
-    const badgeBaseStyle = { fontSize: '0.7rem', padding: '3px 10px', borderRadius: '12px', fontWeight: '600', marginLeft: '10px', display: 'inline-block', verticalAlign: 'middle', border: 'none' };
-    const dateLabelStyle = { fontSize: '0.72rem', color: '#888', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '4px' };
-    const undoButtonStyle = { background: 'none', border: 'none', color: '#ff0019', cursor: 'pointer', padding: '5px' };
-    const redeemButtonStyle = { padding: '4px 12px', cursor: 'pointer', borderRadius: '4px', border: 'none', backgroundColor: '#3dc9b6', color: '#fff', fontSize: '0.85rem', fontWeight: 'bold' };
-
     return (
         <main className="center-panel" ref={panelRef}>
             <header className="center-header">
@@ -102,7 +90,6 @@ const CenterPanel = ({
                         {tasksList.filter(t => !t.done).map(t => (
                             <div key={t.id} className="task-row-item quick-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px', borderBottom: '1px solid #f0f0f0', fontSize: '0.9rem' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    {/* 🟢 Emoji en la lista rápida */}
                                     <span style={{ fontSize: '1.2rem' }}>{getTaskIcon(t.title)}</span>
                                     <span>{t.title}</span>
                                 </div>
@@ -159,17 +146,12 @@ const CenterPanel = ({
                                 }}
                             >
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    {/* 🟢 Emoji dinámico en la lista principal de tareas */}
                                     <span style={{ fontSize: '1.5rem', minWidth: '30px' }}>{getTaskIcon(t.title)}</span>
                                     <div>
                                         <span>{t.title}</span>
-                                        {subFilter === 'principal' ? (
-                                            <span style={{ ...badgeStyle, backgroundColor: t.wasRejected ? '#fff0f0' : '#f8f9fa', color: t.wasRejected ? '#ff0019' : '#6c757d' }}>
-                                                {t.wasRejected ? 'Desaprobada' : 'Por hacer'}
-                                            </span>
-                                        ) : (
-                                            <span style={{ ...badgeStyle, backgroundColor: '#e7f5ff', color: '#007bff' }}>Aprobada</span>
-                                        )}
+                                        <span style={{ ...badgeStyle, backgroundColor: t.done ? '#e7f5ff' : (t.wasRejected ? '#fff0f0' : '#f8f9fa'), color: t.done ? '#007bff' : (t.wasRejected ? '#ff0019' : '#6c757d') }}>
+                                            {t.done ? 'Aprobada' : (t.wasRejected ? 'Desaprobada' : 'Por hacer')}
+                                        </span>
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -193,7 +175,8 @@ const CenterPanel = ({
                                 }}
                             >
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    <span style={{ fontSize: '1.5rem', minWidth: '30px' }}>🎟️</span>
+                                    {/* 🟢 Icono dinámico para cupones */}
+                                    <span style={{ fontSize: '1.5rem', minWidth: '30px' }}>{getCouponIcon(c.name)}</span>
                                     <div>
                                         <span>{c.name}</span>
                                         <span style={{ ...badgeStyle, backgroundColor: c.redeemed ? '#e6fffa' : '#fff9db', color: c.redeemed ? '#3dc9b6' : '#f08c00' }}>
@@ -225,7 +208,8 @@ const CenterPanel = ({
                                     }}
                                 >
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                        <span style={{ fontSize: '1.5rem', minWidth: '30px' }}>🏆</span>
+                                        {/* 🟢 Icono dinámico para gran premio */}
+                                        <span style={{ fontSize: '1.5rem', minWidth: '30px' }}>{getGrandPrizeIcon(grandPrize.name)}</span>
                                         <div>
                                             <span>{grandPrize.name}</span>
                                             <span style={{ ...badgeStyle, backgroundColor: grandPrize.redeemed ? '#e6fffa' : '#fff9db', color: grandPrize.redeemed ? '#32a89b' : '#f08c00' }}>

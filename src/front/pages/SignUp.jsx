@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import "../SignUp.css";
+import "../styles/SignUp.css";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { apiRequest } from "../services/api";
 import beaverImg from "../assets/img/Castor-1.png";
@@ -83,6 +83,7 @@ export const SignUp = () => {
                             </form>
                         </div>
                     </div>
+                            <img src={beaverImg} alt="Mascot" style={{width: "30%", height:"30%", margin:"auto"}}/>
                 </div>
             </div>
         </section>

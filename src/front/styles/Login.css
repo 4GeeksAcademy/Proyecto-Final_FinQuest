@@ -6,7 +6,7 @@
   align-items: center;
   padding: 0 5%;
 
-  background-image: url("./assets/img/fondo.jpg");
+  background-image: url("../assets/img/fondo.jpg");
   background-size: cover;
   background-position: center;
 }
@@ -23,7 +23,7 @@
   padding: 2rem;
   border-radius: 20px;
 
-  background-image: url("./assets/img/fondo_login.png");
+  background-image: url("../assets/img/fondo_login.png");
   background-size: cover;
   background-position: center;
 

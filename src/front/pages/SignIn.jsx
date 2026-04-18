@@ -3,7 +3,7 @@ import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import beaverImg from "../assets/img/cashtor_coins.png";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { apiRequest } from "../services/api";
-import "../Login.css";
+import "../styles/Login.css";
 
 export const SignIn = () => {
     const { store, dispatch } = useGlobalReducer();

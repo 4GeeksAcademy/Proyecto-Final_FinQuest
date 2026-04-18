@@ -72,7 +72,7 @@ export const ChildGrandPrizeSet = ({ onBack, onNextStep, step, formData }) => {
                                 className="task-coin-input prize-amount-input"
                                 style={{ fontSize: "1.2rem" }}
                                 // Añadimos el placeholder sugerido
-                                placeholder="5000"
+                                placeholder="Ej. 5000"
                                 value={goalAmount}
                                 onChange={(e) => setGoalAmount(e.target.value)}
                             />

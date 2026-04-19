@@ -8,6 +8,7 @@ import "../styles/child-dashboard.css";
 import { TaskModal } from "../components/TaskModal";
 import { RewardModal } from "../components/RewardModal";
 import { GameModal } from "../components/GameModal";
+import { LevelUpModal } from "../components/LevelUpModal"; 
 import monedas3 from "../assets/img/monedas3.png";
 import tickets from "../assets/img/tickets.png";
 import useGlobalReducer from "../hooks/useGlobalReducer";
@@ -20,6 +21,7 @@ export const ChildDashboard = () => {
     const [showTaskModal, setShowTaskModal] = useState(false);
     const [showRewardModal, setShowRewardModal] = useState(false);
     const [showGameModal, setShowGameModal] = useState(false);
+    const [showLevelModal, setShowLevelModal] = useState(false); 
     const [rewardToast, setRewardToast] = useState(null);
     const [coinPopup, setCoinPopup] = useState(null);
     const { store } = useGlobalReducer();
@@ -31,6 +33,22 @@ export const ChildDashboard = () => {
             setError(true);
             return;
         }
+
+        // 🟢 LÓGICA INFALIBLE DE SUBIDA DE NIVEL (Incluso tras cerrar la app)
+        const xpNuevo = result.child.total_earned_coins || 0;
+        const nivelNuevo = Math.floor(xpNuevo / 500) + 1;
+        
+        // Usamos una clave única por cada niño para no mezclar progresos
+        const storageKey = `last_seen_level_child_${childId}`;
+        const nivelVistoAnteriormente = parseInt(localStorage.getItem(storageKey));
+
+        // Detectamos si el nivel actual es mayor al que guardamos en el navegador
+        if (nivelVistoAnteriormente && nivelNuevo > nivelVistoAnteriormente) {
+            setShowLevelModal(true);
+        }
+
+        // Guardamos el nuevo nivel como "visto"
+        localStorage.setItem(storageKey, nivelNuevo);
 
         setData(result);
 
@@ -152,14 +170,12 @@ export const ChildDashboard = () => {
 
     const { child, tasks, rewards } = data;
 
-    // --- LÓGICA DE CÁLCULOS (NIVEL Y MONEDAS) ---
     const totalXP = child.total_earned_coins || 0;
     const currentLevel = Math.floor(totalXP / 500) + 1;
     const xpInCurrentLevel = totalXP % 500;
     const levelProgress = (xpInCurrentLevel / 500) * 100;
     const xpRemaining = 500 - xpInCurrentLevel;
 
-    // 🟢 Cálculo para el progreso del Gran Premio (usado en Header y GoalSection)
     const goalCoins = child.grand_prize?.coins || 1; 
     const prizeProgress = Math.min((child.total_coins / goalCoins) * 100, 100);
 
@@ -289,6 +305,14 @@ export const ChildDashboard = () => {
                     tasks={tasks}
                     onClose={() => setShowTaskModal(false)}
                     onComplete={handleComplete}
+                />
+            )}
+
+            {/* 🟢 MODAL DE SUBIDA DE NIVEL */}
+            {showLevelModal && (
+                <LevelUpModal 
+                    level={currentLevel} 
+                    onClose={() => setShowLevelModal(false)} 
                 />
             )}
         </div>

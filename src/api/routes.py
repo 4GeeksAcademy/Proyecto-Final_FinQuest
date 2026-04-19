@@ -219,6 +219,25 @@ def validate_task(task_id):
         "task_status": task.status
     }), 200
 
+# 🟢 NUEVA RUTA: DESHACER APROBACIÓN (ROLLBACK)
+@api.route("/tasks/<int:task_id>/rollback", methods=["PATCH"])
+def rollback_task(task_id):
+    task = db.session.get(Task, task_id)
+    if not task: raise APIException("Task not found", status_code=404)
+    
+    child = db.session.get(Child, task.child_id)
+    
+    # Solo restamos si estaba completada
+    if task.status == "completed":
+        child.total_coins = max(0, child.total_coins - task.coins)
+        child.total_earned_coins = max(0, child.total_earned_coins - task.coins)
+        
+    task.status = "pending"
+    task.last_completed = None
+    
+    db.session.commit()
+    return jsonify({"msg": "Rollback successful", "total_coins": child.total_coins}), 200
+
 # --- RUTA PARA MONEDAS DE MINIJUEGOS ---
 
 @api.route("/child/<int:child_id>/add-coins", methods=["POST"])
@@ -237,7 +256,7 @@ def add_minigame_coins(child_id):
         db.session.commit()
         
     return jsonify({
-        "total_coins": child.total_coins,
+        "total_coins": child.total_coins, 
         "total_earned_coins": child.total_earned_coins
     }), 200
 

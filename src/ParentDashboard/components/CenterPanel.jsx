@@ -8,7 +8,7 @@ const CenterPanel = ({
     pendingTasksCount,
     tasksList = [],
     couponsList = [],
-    grandPrize = null, // Viene definido como grandPrize
+    grandPrize = null,
     onApproveTask,
     onUndoTask,
     onUndoRedeem,
@@ -46,11 +46,23 @@ const CenterPanel = ({
         switch (activeTab) {
             case 'Tareas': return '+ Añadir Tarea';
             case 'Cupones': return '+ Añadir Cupón';
-            // CORRECCIÓN AQUÍ: Usamos grandPrize que es la prop real
             case 'Gran Premio': return grandPrize ? 'Editar Gran Premio' : '+ Añadir Gran Premio';
             default: return `Nuevo ${activeTab}`;
         }
     };
+
+    // 🟢 VALIDACIÓN: Bloqueo si no hay perfil marcado
+    if (!childName || childName.trim() === "" || childName === "Hijo") {
+        return (
+            <main className="center-panel" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
+                <div style={{ textAlign: 'center', color: '#888' }}>
+                    <i className="fa-solid fa-arrow-left" style={{ fontSize: '2.5rem', color: '#3dc9b6', marginBottom: '15px' }}></i>
+                    <h3>Selecciona un perfil</h3>
+                    <p>Haz clic en un niño a la izquierda para gestionar sus misiones.</p>
+                </div>
+            </main>
+        );
+    }
 
     return (
         <main className="center-panel" ref={panelRef}>

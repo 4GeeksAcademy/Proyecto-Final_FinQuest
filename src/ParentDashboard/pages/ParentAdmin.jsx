@@ -10,7 +10,7 @@ import "../style ParentDash/stylePAdmin.css";
 export const ParentAdmin = () => {
     const { store } = useGlobalReducer();
     const [selectedChildId, setSelectedChildId] = useState(null);
-    const [selectedChildName, setSelectedChildName] = useState("Hijo");
+    const [selectedChildName, setSelectedChildName] = useState(""); // 🟢 Reseteado
 
     const [tasks, setTasks] = useState([]);
     const [cupones, setCupones] = useState([]);
@@ -73,10 +73,18 @@ export const ParentAdmin = () => {
         }
     };
 
-    const handleUndoTask = (taskId) => {
-        setTasks(prev => prev.map(task =>
-            task.id === taskId ? { ...task, done: false, status: 'pending', wasRejected: true } : task
-        ));
+    // 🟢 ACTUALIZADO: Ahora llama al backend para quitar puntos
+    const handleUndoTask = async (taskId) => {
+        const baseUrl = import.meta.env.VITE_BACKEND_URL;
+        try {
+            const response = await fetch(`${baseUrl}api/tasks/${taskId}/rollback`, {
+                method: 'PATCH',
+                headers: { "Content-Type": "application/json" }
+            });
+            if (response.ok) fetchData();
+        } catch (error) {
+            console.error("Error al revertir tarea:", error);
+        }
     };
 
     const handleRedeem = async (id, type) => {
@@ -130,6 +138,7 @@ export const ParentAdmin = () => {
     };
 
     const handleCreateItem = (type) => {
+        if (!selectedChildId) return; // 🟢 Seguridad
         setManagerType(type);
         setShowManager(true);
     };

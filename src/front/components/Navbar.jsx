@@ -14,6 +14,7 @@ export const Navbar = () => {
   JSON.parse(localStorage.getItem("activeProfile"));
 
     const isHome = location.pathname === "/";
+    const isParent = location.pathname === "/parentadmin";
 
     const handleLogout = () => {
         dispatch({ type: "clear_session", payload: "Sesión cerrada correctamente." });
@@ -57,7 +58,7 @@ export const Navbar = () => {
                         {store.token ? (
                             <>
 
-                                {activeProfile?.role === "parent" && (
+                                {isParent && (
                                     <NavLink className="nav-link nav-link-custom" to="/parentadmin">
                                         Panel de Control
                                     </NavLink>

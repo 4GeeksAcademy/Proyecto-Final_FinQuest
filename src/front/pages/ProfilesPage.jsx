@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiRequest } from "../services/api";
 import { PinModal } from "../components/PinModal";
-import "../ProfilesPage.css";
+import "../styles/ProfilesPage.css";
 import cashtorImg from "../assets/img/Cashtor.jpg"; 
 
 export const ProfilesPage = () => {

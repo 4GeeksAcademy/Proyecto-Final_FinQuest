@@ -1,13 +1,18 @@
 import React, { useState } from "react";
-// Importación de avatares con la ruta corregida para evitar el error de Vite
+import { useNavigate } from "react-router-dom";
+
+// Avatares
 import avatar1 from "../../assets/img/Profiles/Children/child_9.png";
 import avatar2 from "../../assets/img/Profiles/Children/child_7.png";
 import avatar3 from "../../assets/img/Profiles/Children/child_4.png";
 import avatar4 from "../../assets/img/Profiles/Children/child_5.png";
+
 import { ProgressBar } from "./ProgressBar";
 import "./ChildWizard.css";
 
 export const ChildRegistration = ({ onClose, onNextStep, step }) => {
+    const navigate = useNavigate(); // 👈 navegación
+
     const [name, setName] = useState("");
     const [age, setAge] = useState("");
     const [pin, setPin] = useState("");
@@ -15,7 +20,6 @@ export const ChildRegistration = ({ onClose, onNextStep, step }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
 
-    // Mapeamos los ID a las imágenes reales que acabamos de importar
     const avatars = [
         { id: 1, img: avatar1, name: "Niño 1" },
         { id: 2, img: avatar2, name: "Niño 2" },
@@ -26,8 +30,8 @@ export const ChildRegistration = ({ onClose, onNextStep, step }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (pin.length !== 4) return;
+
         setIsSubmitting(true);
-        // Simulamos un pequeño tiempo de carga
         await new Promise(resolve => setTimeout(resolve, 800));
         setIsSubmitting(false);
         setIsSuccess(true);
@@ -35,14 +39,14 @@ export const ChildRegistration = ({ onClose, onNextStep, step }) => {
 
     const handleConfirmAndNext = () => {
         const currentAvatarObj = avatars.find(av => av.id === selectedAvatar);
+
         const childData = {
             name: name,
             age: parseInt(age),
             pin: pin,
-            // Enviamos la referencia de la imagen importada
             avatar: currentAvatarObj ? currentAvatarObj.img : avatar1
         };
-        // IMPORTANTE: Para que ChildWizard funcione con el código que revisamos antes:
+
         onNextStep({ child: { child: childData } });
     };
 
@@ -52,15 +56,17 @@ export const ChildRegistration = ({ onClose, onNextStep, step }) => {
         <div className="wizard-step-wrapper animate__animated animate__fadeIn">
 
             {isSuccess ? (
-                /* VISTA DE ÉXITO */
                 <>
+                    {/* VISTA ÉXITO */}
                     <div className="wizard-header text-center pb-0">
                         <h2 className="wizard-title mb-2">¡Perfil Creado!</h2>
                     </div>
 
                     <div className="wizard-body d-flex flex-column align-items-center justify-content-center" style={{ paddingTop: "0" }}>
                         <div className="avatar-preview-container" style={{ marginTop: "20px" }}>
-                            <img src={currentAvatar.img} alt="Avatar seleccionado"
+                            <img
+                                src={currentAvatar.img}
+                                alt="Avatar seleccionado"
                                 style={{
                                     width: "130px",
                                     height: "130px",
@@ -71,112 +77,142 @@ export const ChildRegistration = ({ onClose, onNextStep, step }) => {
                                 }}
                             />
                         </div>
-                        <h3 style={{ color: "#32a89b", marginTop: "20px", fontWeight: "bold" }}>{name}</h3>
+
+                        <h3 style={{ color: "#32a89b", marginTop: "20px", fontWeight: "bold" }}>
+                            {name}
+                        </h3>
+
                         <p style={{ color: "#64748b", marginBottom: "40px", textAlign: "center", fontSize: "1.1rem" }}>
-                            El espacio para tu hijo/a ya está listo.<br />¿Configuramos sus metas y tareas ahora?
+                            El espacio para tu hijo/a ya está listo.<br />
+                            ¿Configuramos sus metas y tareas ahora?
                         </p>
                     </div>
 
                     <div className="wizard-footer">
-                        <button className="btn-next" style={{ marginBottom: "15px" }} onClick={handleConfirmAndNext}>
+                        <button
+                            className="btn-next"
+                            style={{ marginBottom: "15px" }}
+                            onClick={handleConfirmAndNext}
+                        >
                             Sí, asignar primeras tareas
                         </button>
-                        <button className="btn-back" onClick={onClose}>
+
+                        {/* 👇 BOTÓN CORREGIDO */}
+                        <button
+                            className="btn-back"
+                            onClick={() => {
+                                onClose(); // opcional si usas modal
+                                navigate("/parentadmin");
+                            }}
+                        >
                             Hacerlo más tarde
                         </button>
                     </div>
                 </>
             ) : (
-                /* FORMULARIO DE REGISTRO */
-                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
-                    <div className="wizard-header">
-                        <h2 className="wizard-title">Crear Perfil del niño/a</h2>
-                    </div>
+                <>
+                    {/* FORMULARIO */}
+                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
 
-                    <div className="wizard-body">
-                        {/* NOMBRE */}
-                        <div style={{ marginBottom: "20px" }}>
-                            <label className="wizard-label">Nombre del perfil</label>
-                            <input
-                                type="text"
-                                className="wizard-input"
-                                placeholder="Nombre del niño/a"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                required
-                            />
+                        <div className="wizard-header">
+                            <h2 className="wizard-title">Crear Perfil del niño/a</h2>
                         </div>
 
-                        {/* EDAD Y PIN */}
-                        <div style={{ display: "flex", gap: "20px", marginBottom: "30px" }}>
-                            <div style={{ flex: "1" }}>
-                                <label className="wizard-label">Edad</label>
+                        <div className="wizard-body">
+
+                            {/* NOMBRE */}
+                            <div style={{ marginBottom: "20px" }}>
+                                <label className="wizard-label">Nombre del perfil</label>
                                 <input
-                                    type="number"
+                                    type="text"
                                     className="wizard-input"
-                                    style={{ textAlign: "center" }}
-                                    placeholder="Edad"
-                                    value={age}
-                                    onChange={(e) => setAge(e.target.value)}
+                                    placeholder="Nombre del niño/a"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
                                     required
                                 />
                             </div>
-                            <div style={{ flex: "2" }}>
-                                <label className="wizard-label">PIN del perfil</label>
-                                <input
-                                    type="password"
-                                    className="wizard-input"
-                                    placeholder="Crea un código de 4 dígitos"
-                                    maxLength="4"
-                                    value={pin}
-                                    onChange={(e) => setPin(e.target.value.replace(/\D/g, ""))}
-                                    required
-                                />
-                            </div>
-                        </div>
 
-                        {/* SELECCIÓN DE AVATAR */}
-                        <div>
-                            <label className="wizard-label" style={{ textAlign: "center", marginLeft: 0 }}>Selecciona tu avatar</label>
-                            <div style={{ display: "flex", justifyContent: "center", gap: "20px", marginTop: "15px" }}>
-                                {avatars.map((av) => (
-                                    <img
-                                        key={av.id}
-                                        src={av.img}
-                                        alt={av.name}
-                                        onClick={() => setSelectedAvatar(av.id)}
-                                        style={{
-                                            width: "75px",
-                                            height: "75px",
-                                            borderRadius: "50%",
-                                            cursor: "pointer",
-                                            objectFit: "cover",
-                                            border: selectedAvatar === av.id ? "4px solid #32a89b" : "2px solid transparent",
-                                            transition: "transform 0.2s ease",
-                                            transform: selectedAvatar === av.id ? "scale(1.1)" : "scale(1)"
-                                        }}
+                            {/* EDAD Y PIN */}
+                            <div style={{ display: "flex", gap: "20px", marginBottom: "30px" }}>
+                                <div style={{ flex: "1" }}>
+                                    <label className="wizard-label">Edad</label>
+                                    <input
+                                        type="number"
+                                        className="wizard-input"
+                                        style={{ textAlign: "center" }}
+                                        placeholder="Edad"
+                                        value={age}
+                                        onChange={(e) => setAge(e.target.value)}
+                                        required
                                     />
-                                ))}
+                                </div>
+
+                                <div style={{ flex: "2" }}>
+                                    <label className="wizard-label">PIN del perfil</label>
+                                    <input
+                                        type="password"
+                                        className="wizard-input"
+                                        placeholder="Crea un código de 4 dígitos"
+                                        maxLength="4"
+                                        value={pin}
+                                        onChange={(e) => setPin(e.target.value.replace(/\D/g, ""))}
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            {/* AVATARES */}
+                            <div>
+                                <label className="wizard-label" style={{ textAlign: "center", marginLeft: 0 }}>
+                                    Selecciona tu avatar
+                                </label>
+
+                                <div style={{ display: "flex", justifyContent: "center", gap: "20px", marginTop: "15px" }}>
+                                    {avatars.map((av) => (
+                                        <img
+                                            key={av.id}
+                                            src={av.img}
+                                            alt={av.name}
+                                            onClick={() => setSelectedAvatar(av.id)}
+                                            style={{
+                                                width: "75px",
+                                                height: "75px",
+                                                borderRadius: "50%",
+                                                cursor: "pointer",
+                                                objectFit: "cover",
+                                                border: selectedAvatar === av.id ? "4px solid #32a89b" : "2px solid transparent",
+                                                transform: selectedAvatar === av.id ? "scale(1.1)" : "scale(1)"
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div className="wizard-footer">
+                            <ProgressBar step={step} />
+
+                            <div style={{ display: "flex", gap: "15px", marginTop: "20px" }}>
+                                <button type="button" className="btn-back" onClick={() => {
+                                    navigate("/parentadmin");
+                                }}>
+                                    Cancelar
+                                </button>
+
+                                <button
+                                    type="submit"
+                                    className="btn-next"
+                                    disabled={isSubmitting || !name || !age || pin.length !== 4}
+                                >
+                                    {isSubmitting ? "Cargando..." : "Siguiente"}
+                                </button>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="wizard-footer">
-                        <ProgressBar step={step} />
-                        <div style={{ display: "flex", gap: "15px", marginTop: "20px" }}>
-                            <button type="button" className="btn-back" onClick={onClose}>
-                                Cancelar
-                            </button>
-                            <button
-                                type="submit"
-                                className="btn-next"
-                                disabled={isSubmitting || !name || !age || pin.length !== 4}
-                            >
-                                {isSubmitting ? "Cargando..." : "Siguiente"}
-                            </button>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </>
             )}
         </div>
     );

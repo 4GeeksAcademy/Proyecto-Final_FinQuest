@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "../Login.css";
+import "../styles/Login.css";
 import beaverImg from "../assets/img/cashtor_coins.png";
 
 export const Login = () => {

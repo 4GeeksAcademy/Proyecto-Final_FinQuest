@@ -51,7 +51,7 @@ const CenterPanel = ({
         switch (activeTab) {
             case 'Tareas': return '+ Añadir Tarea';
             case 'Cupones': return '+ Añadir Cupón';
-            case 'Gran Premio': return grandPrize ? 'Editar Gran Premio' : '+ Añadir Gran Premio';
+            case 'Gran Premio': return '+ Añadir Gran Premio';
             default: return `Nuevo ${activeTab}`;
         }
     };
@@ -118,7 +118,7 @@ const CenterPanel = ({
                             ))}
                         </div>
                         {/* Funcionalidad nuestra: Envía el tipo técnico al crear */}
-                        <button className="add-mission-btn" onClick={() => onCreateItem(activeTab === 'Gran Premio' ? 'grand-prize' : activeTab)}>
+                        <button className="add-mission-btn" disabled={activeTab === 'Gran Premio' && grandPrize} onClick={() => onCreateItem(activeTab === 'Gran Premio' ? 'grand-prize' : activeTab)}>
                             {getCreateButtonLabel()}
                         </button>
                     </div>

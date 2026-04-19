@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import (
     create_access_token,
@@ -17,7 +17,6 @@ url_front = os.getenv('VITE_FRONT_URL')
 api = Blueprint("api", __name__)
 
 # --- FUNCIONES AUXILIARES ---
-
 
 def get_json_payload():
     return request.get_json(silent=True) or {}
@@ -47,7 +46,6 @@ def get_current_user():
     return user
 
 # --- RUTAS DE AUTENTICACIÓN ---
-
 
 @api.route("/signup", methods=["POST"])
 @api.route("/sign-up", methods=["POST"])
@@ -91,7 +89,6 @@ def me():
 
 # --- GESTIÓN DE HIJOS (WIZARD) ---
 
-
 @api.route("/parent/<int:parent_id>/child", methods=["POST"])
 @jwt_required()
 def create_child(parent_id):
@@ -114,7 +111,6 @@ def create_child(parent_id):
 
 # --- DASHBOARD DEL NIÑO ---
 
-
 @api.route("/child-dashboard/<int:child_id>", methods=["GET"])
 def get_child_dashboard(child_id):
     child = db.session.get(Child, child_id)
@@ -124,7 +120,7 @@ def get_child_dashboard(child_id):
     today = datetime.now(timezone.utc).date()
     streak_reward_given = False
 
-    # 1. Gestión de Racha y recompensa diaria
+    # 1. Gestión de Racha y recompensa diaria (Mantenemos lógica de compañeros)
     if child.last_login_date is None:
         child.streak = 1
         child.total_coins += 10
@@ -143,32 +139,36 @@ def get_child_dashboard(child_id):
 
     child.last_login_date = datetime.now(timezone.utc)
 
-    # 2. Tareas: Reset diario y Filtrado por día actual
+    # 2. Tareas: Reset diario y Unificación de conflictos
     tasks = Task.query.filter_by(child_id=child_id).all()
     dias_map = {0: "L", 1: "M", 2: "X", 3: "J", 4: "V", 5: "S", 6: "D"}
     hoy_letra = dias_map[datetime.now(timezone.utc).weekday()]
 
-    tasks_hoy = []
+    all_serialized_tasks = []
     for t in tasks:
+        # Resetear si es un nuevo día
         if t.last_completed and t.last_completed.date() < today:
             if t.status != "pending_validation":
                 t.status = "pending"
-        if hoy_letra in (t.days or ""):
-            tasks_hoy.append(t.serialize())
+        
+        task_data = t.serialize()
+        # Añadimos el flag is_today para que el front sepa qué mostrar en la lista principal
+        task_data["is_today"] = hoy_letra in (t.days or "")
+        all_serialized_tasks.append(task_data)
 
     s_goals = SmallGoal.query.filter_by(child_id=child_id).all()
     db.session.commit()
 
+    # Devolvemos el objeto unificado con todas las tareas y los datos de racha
     return jsonify({
         "child": child.serialize(),
-        "tasks": tasks_hoy,
+        "tasks": all_serialized_tasks,
         "rewards": [sg.serialize() for sg in s_goals],
         "streak_reward_given": streak_reward_given,
         "streak_reward_amount": 10
     }), 200
 
 # --- GESTIÓN INDIVIDUAL (BORRAR Y EDITAR) ---
-
 
 @api.route("/tasks/<int:task_id>", methods=["DELETE", "PATCH"])
 def handle_single_task(task_id):
@@ -193,7 +193,6 @@ def handle_single_task(task_id):
         return jsonify(task.serialize()), 200
 
 # --- CREACIÓN MASIVA ---
-
 
 @api.route("/child/<int:child_id>/tasks", methods=["POST"])
 @jwt_required()
@@ -239,7 +238,6 @@ def create_grand_prize(child_id):
 
 # --- VALIDACIÓN (NIVELES INTEGRADOS) ---
 
-
 @api.route("/tasks/<int:task_id>/validate", methods=["PATCH"])
 def validate_task(task_id):
     task = db.session.get(Task, task_id)
@@ -275,8 +273,6 @@ def rollback_task(task_id):
         raise APIException("Task not found", status_code=404)
 
     child = db.session.get(Child, task.child_id)
-
-    # Solo restamos si estaba completada
     
     if task.status == "completed":
         child.total_coins = max(0, child.total_coins - task.coins)
@@ -326,7 +322,6 @@ def add_minigame_coins(child_id):
     }), 200
 
 # --- RESTO DE RUTAS ---
-
 
 @api.route("/parent/<int:parent_id>/children", methods=["GET"])
 @jwt_required()

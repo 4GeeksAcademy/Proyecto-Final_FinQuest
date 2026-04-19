@@ -25,7 +25,6 @@ export const GoalSection = ({ child, onMinigameClick, onRedeemPrize }) => {
                     />
                     <div className="goal-card__price">
                         <span className="goal-card__price-number">{prizeCoins.toLocaleString()}</span>
-                        <span className="goal-card__price-label">Monedas</span>
                     </div>
                 </div>
 

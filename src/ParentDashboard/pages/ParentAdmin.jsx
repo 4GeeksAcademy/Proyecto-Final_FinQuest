@@ -38,7 +38,8 @@ export const ParentAdmin = () => {
                     status: t.status,
                     done: t.status === "completed",
                     days: t.days || [],
-                    date: t.date || null
+                    date: t.date || null,
+                    last_completed: t.last_completed || null
                 })));
 
                 setCupones(data.rewards.map(r => ({

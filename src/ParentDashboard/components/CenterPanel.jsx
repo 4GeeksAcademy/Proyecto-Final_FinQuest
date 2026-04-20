@@ -115,7 +115,7 @@ const CenterPanel = ({
                             ))}
                         </div>
                         {/* Funcionalidad nuestra: Envía el tipo técnico al crear */}
-                        <button className="add-mission-btn" disabled={activeTab === 'Gran Premio' && grandPrize} onClick={() => onCreateItem(activeTab === 'Gran Premio' ? 'grand-prize' : activeTab)}>
+                        <button className="add-mission-btn" disabled={activeTab === 'Gran Premio' && grandPrize && !grandPrize.redeemed} onClick={() => onCreateItem(activeTab === 'Gran Premio' ? 'grand-prize' : activeTab)}>
                             {getCreateButtonLabel()}
                         </button>
                     </div>

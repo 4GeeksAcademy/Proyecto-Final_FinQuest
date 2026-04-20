@@ -1,21 +1,23 @@
 import { useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-
+import { Navigate, useNavigate } from "react-router-dom";
+import "../styles/SignUp.css";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { apiRequest } from "../services/api";
-
+import beaverImg from "../assets/img/Castor-1.png";
 
 export const SignUp = () => {
     const { store, dispatch } = useGlobalReducer();
     const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         name: "",
         email: "",
-        password: ""
+        password: "",
+        parentalPIN: ""
     });
 
     if (store.token) {
-        return <Navigate to="/profile" replace />;
+        return <Navigate to="/child-registration" replace />;
     }
 
     const handleChange = (event) => {
@@ -31,28 +33,25 @@ export const SignUp = () => {
         dispatch({ type: "auth_request" });
 
         try {
-            const data = await apiRequest("/api/sign-up", {
+            const data = await apiRequest("api/sign-up", {
                 method: "POST",
-                body: JSON.stringify(formData)
+                body: JSON.stringify({
+                    ...formData,
+                    role: "parent"
+                })
             });
 
             dispatch({
                 type: "auth_success",
-                payload: {
-                    token: data.access_token,
-                    user: data.user
-                }
+                payload: { token: data.access_token, user: data.user }
             });
-            dispatch({
-                type: "set_notice",
-                payload: `Cuenta creada para ${data.user.name}.`
-            });
-            navigate("/profile", { replace: true });
+
+            localStorage.setItem("token", data.access_token);
+            localStorage.setItem("user", JSON.stringify(data.user));
+
+            navigate("/child-registration", { replace: true });
         } catch (error) {
-            dispatch({
-                type: "auth_failure",
-                payload: error.message
-            });
+            dispatch({ type: "auth_failure", payload: error.message });
         }
     };
 
@@ -62,64 +61,29 @@ export const SignUp = () => {
                 <div className="row justify-content-center">
                     <div className="col-lg-6">
                         <div className="panel-card auth-card">
-                            <p className="eyebrow">Create a user in Flask</p>
-                            <h1 className="section-title">Sign up</h1>
-                            <p className="section-copy">
-                                Este formulario crea el usuario en la API y deja la sesion iniciada con JWT al instante.
-                            </p>
+                            <h1 className="section-title">Crea tu cuenta</h1>
                             <form className="auth-form" onSubmit={handleSubmit}>
-                                <label className="form-label" htmlFor="signup-name">Nombre</label>
-                                <input
-                                    className="form-control form-control-lg"
-                                    id="signup-name"
-                                    name="name"
-                                    onChange={handleChange}
-                                    placeholder="Ada Lovelace"
-                                    type="text"
-                                    value={formData.name}
-                                />
+                                <label className="form-label">Nombre</label>
+                                <input className="form-control" name="name" onChange={handleChange} value={formData.name} type="text" required />
+                                
+                                <label className="form-label">Correo electrónico</label>
+                                <input className="form-control" name="email" onChange={handleChange} value={formData.email} type="email" required />
+                                
+                                <label className="form-label">Contraseña</label>
+                                <input className="form-control" name="password" onChange={handleChange} value={formData.password} type="password" required />
+                                
+                                <label className="form-label">PIN Parental</label>
+                                <input className="form-control" name="parentalPIN" onChange={handleChange} value={formData.parentalPIN} type="password" maxLength={4} required />
 
-                                <label className="form-label" htmlFor="signup-email">Email</label>
-                                <input
-                                    className="form-control form-control-lg"
-                                    id="signup-email"
-                                    name="email"
-                                    onChange={handleChange}
-                                    placeholder="ada@example.com"
-                                    type="email"
-                                    value={formData.email}
-                                />
+                                {store.errors.auth && <div className="alert alert-danger">{store.errors.auth}</div>}
 
-                                <label className="form-label" htmlFor="signup-password">Password</label>
-                                <input
-                                    className="form-control form-control-lg"
-                                    id="signup-password"
-                                    name="password"
-                                    onChange={handleChange}
-                                    placeholder="Minimo 6 caracteres"
-                                    type="password"
-                                    value={formData.password}
-                                />
-
-                                {store.errors.auth ? (
-                                    <div className="alert alert-danger mb-0">{store.errors.auth}</div>
-                                ) : null}
-
-                                <button
-                                    className="btn btn-primary-soft btn-lg w-100"
-                                    disabled={store.loading.auth}
-                                    type="submit"
-                                >
+                                <button className="btn btn-primary-soft w-100" type="submit" disabled={store.loading.auth}>
                                     {store.loading.auth ? "Creando cuenta..." : "Crear cuenta"}
                                 </button>
                             </form>
-
-                            <p className="auth-footnote mb-0">
-                                Si ya tienes cuenta, puedes{" "}
-                                <Link to="/sign-in">iniciar sesion aqui</Link>.
-                            </p>
                         </div>
                     </div>
+                            <img src={beaverImg} alt="Mascot" style={{width: "30%", height:"30%", margin:"auto"}}/>
                 </div>
             </div>
         </section>

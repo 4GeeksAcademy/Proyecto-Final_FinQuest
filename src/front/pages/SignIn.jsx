@@ -1,24 +1,24 @@
 import { useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
-
+import beaverImg from "../assets/img/cashtor_coins.png";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { apiRequest } from "../services/api";
-
+import "../styles/Login.css";
 
 export const SignIn = () => {
     const { store, dispatch } = useGlobalReducer();
     const location = useLocation();
     const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
-        email: "lara@example.com",
-        password: "demo123"
+
     });
 
     if (store.token) {
-        return <Navigate to="/profile" replace />;
+        return <Navigate to="/profiles" replace />;
     }
 
-    const redirectTarget = location.state?.from?.pathname || "/profile";
+    const redirectTarget = location.state?.from?.pathname || "/profiles";
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -33,7 +33,7 @@ export const SignIn = () => {
         dispatch({ type: "auth_request" });
 
         try {
-            const data = await apiRequest("/api/sign-in", {
+            const data = await apiRequest("api/sign-in", {
                 method: "POST",
                 body: JSON.stringify(formData)
             });
@@ -45,11 +45,21 @@ export const SignIn = () => {
                     user: data.user
                 }
             });
+
+            // Guardar en localStorage
+            localStorage.setItem("token", data.access_token);
+            localStorage.setItem("user", JSON.stringify(data.user));
+
+            console.log("TOKEN guardado:", localStorage.getItem("token"));
+            console.log("USER guardado:", JSON.parse(localStorage.getItem("user")));
+
             dispatch({
                 type: "set_notice",
                 payload: `Bienvenido otra vez, ${data.user.name}.`
             });
-            navigate(redirectTarget, { replace: true });
+
+            // Redirección
+            window.location.href = "/profiles";
         } catch (error) {
             dispatch({
                 type: "auth_failure",
@@ -59,58 +69,68 @@ export const SignIn = () => {
     };
 
     return (
-        <section className="auth-section">
-            <div className="container">
-                <div className="row justify-content-center">
-                    <div className="col-lg-6">
-                        <div className="panel-card auth-card">
-                            <p className="eyebrow">Access private pages</p>
-                            <h1 className="section-title">Sign in</h1>
-                            <p className="section-copy">
-                                Al iniciar sesion podras consultar <code>/api/me</code> y tus ordenes en <code>/api/orders</code>.
-                            </p>
-                            <form className="auth-form" onSubmit={handleSubmit}>
-                                <label className="form-label" htmlFor="signin-email">Email</label>
-                                <input
-                                    className="form-control form-control-lg"
-                                    id="signin-email"
-                                    name="email"
-                                    onChange={handleChange}
-                                    type="email"
-                                    value={formData.email}
-                                />
+        <div className="login-container">
 
-                                <label className="form-label" htmlFor="signin-password">Password</label>
-                                <input
-                                    className="form-control form-control-lg"
-                                    id="signin-password"
-                                    name="password"
-                                    onChange={handleChange}
-                                    type="password"
-                                    value={formData.password}
-                                />
+            {/* CARD LOGIN */}
+            <div className="login-card">
+                <h2 className="login-title">Iniciar sesión</h2>
 
-                                {store.errors.auth ? (
-                                    <div className="alert alert-danger mb-0">{store.errors.auth}</div>
-                                ) : null}
+                <form className="login-form" onSubmit={handleSubmit}>
 
-                                <button
-                                    className="btn btn-primary-soft btn-lg w-100"
-                                    disabled={store.loading.auth}
-                                    type="submit"
-                                >
-                                    {store.loading.auth ? "Entrando..." : "Entrar"}
-                                </button>
-                            </form>
+                    <input
+                        className="login-input"
+                        id="signin-email"
+                        name="email"
+                        type="email"
+                        placeholder="Correo electrónico"
+                        value={formData.email}
+                        onChange={handleChange}
+                    />
 
-                            <p className="auth-footnote mb-0">
-                                Si aun no tienes cuenta, puedes{" "}
-                                <Link to="/sign-up">crear un usuario nuevo</Link>.
-                            </p>
+                    <input
+                        className="login-input"
+                        id="signin-password"
+                        name="password"
+                        type="password"
+                        placeholder="Contraseña"
+                        value={formData.password}
+                        onChange={handleChange}
+                    />
+
+                    {store.errors.auth && (
+                        <div className="login-error">
+                            {store.errors.auth}
                         </div>
-                    </div>
+                    )}
+
+                    <button
+                        className="login-button"
+                        type="submit"
+                        disabled={store.loading.auth}
+                    >
+                        {store.loading.auth ? "Entrando..." : "Entrar"}
+                    </button>
+                </form>
+
+                <div className="forgot-password mt-3 text-center">
+                    <Link to="/forgot-password">
+                        ¿Olvidaste tu contraseña?
+                    </Link>
+                </div>
+
+                <div className="login-signup">
+                    <p>
+                        ¿No tienes cuenta?{" "}
+                        <Link to="/sign-up">Regístrate</Link>
+                    </p>
                 </div>
             </div>
-        </section>
+
+            {/* Imagen derecha */}
+            <div className="login-image">
+                <img src={beaverImg} alt="Cashtor" />
+            </div>
+
+        </div>
     );
 };

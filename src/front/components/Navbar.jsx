@@ -1,58 +1,92 @@
-import { NavLink, useNavigate } from "react-router-dom";
-
+import React from "react";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
-
+import logoImg from "../assets/img/logo.png";
+import "./Navbar.css";
 
 export const Navbar = () => {
     const { store, dispatch } = useGlobalReducer();
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const activeProfile =
+  store.activeProfile ||
+  JSON.parse(localStorage.getItem("activeProfile"));
+
+    const isHome = location.pathname === "/";
+    const isParent = location.pathname === "/parentadmin";
 
     const handleLogout = () => {
-        dispatch({ type: "clear_session", payload: "Sesion cerrada correctamente." });
+        dispatch({ type: "clear_session", payload: "Sesión cerrada correctamente." });
+        localStorage.removeItem("activeProfile");
         navigate("/");
     };
 
     return (
-        <nav className="navbar navbar-expand-lg nav-shell">
+        <nav className="navbar navbar-expand-lg navbar-finquest sticky-top">
             <div className="container">
-                <NavLink className="navbar-brand brand-mark" to="/">
-                    Auth Shop
+
+                {/* LOGO */}
+                <NavLink className="navbar-brand d-flex align-items-center" to="/">
+                    <img src={logoImg} alt="FinQuest Logo" className="navbar-logo" />
                 </NavLink>
+
                 <button
-                    className="navbar-toggler"
+                    className="navbar-toggler border-0"
                     type="button"
                     data-bs-toggle="collapse"
                     data-bs-target="#mainNavbar"
-                    aria-controls="mainNavbar"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
                 >
                     <span className="navbar-toggler-icon"></span>
                 </button>
+
                 <div className="collapse navbar-collapse" id="mainNavbar">
-                    <div className="navbar-nav gap-lg-2 ms-auto align-items-lg-center">
-                        <NavLink className="nav-link" to="/">
-                            Catalogo
+                    <div className="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+
+                        {/* Inicio */}
+                        <NavLink className="nav-link nav-link-custom" to="/">
+                            Inicio
                         </NavLink>
+
+
+                        {isHome && (
+                            <a className="nav-link nav-link-custom" href="#nosotros">
+                                Nosotros
+                            </a>
+                        )}
+
                         {store.token ? (
                             <>
-                                <NavLink className="nav-link" to="/orders">
-                                    Mis ordenes
+
+                                {isParent && (
+                                    <NavLink className="nav-link nav-link-custom" to="/parentadmin">
+                                        Panel de Control
+                                    </NavLink>
+                                )}
+
+                                <NavLink className="nav-link nav-link-custom" to="/profiles">
+                                    Cambiar Perfil
                                 </NavLink>
-                                <NavLink className="nav-link" to="/profile">
-                                    Mi perfil
-                                </NavLink>
-                                <button className="btn btn-ghost" onClick={handleLogout} type="button">
-                                    Salir
+
+                                <button
+                                    className="btn btn-logout ms-lg-2"
+                                    onClick={handleLogout}
+                                    type="button"
+                                >
+                                    Cerrar Sesión
                                 </button>
                             </>
                         ) : (
                             <>
-                                <NavLink className="nav-link" to="/sign-in">
-                                    Sign in
+                                <NavLink className="nav-link nav-link-custom" to="/sign-in">
+                                    Iniciar Sesión
                                 </NavLink>
-                                <NavLink className="btn btn-primary-soft" to="/sign-up">
-                                    Crear cuenta
+
+                                <NavLink
+                                    className="btn btn-primary-yellow rounded-pill px-4 ms-lg-2"
+                                    to="/sign-up"
+                                >
+                                    Registrarse
                                 </NavLink>
                             </>
                         )}

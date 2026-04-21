@@ -10,18 +10,14 @@ export const TaskSection = ({ tasks }) => {
 
     return (
         <>
-            {/* 🟢 Esta es la estructura que ella diseñó en el HTML para su CSS */}
             <div className="task-summary-card__header">
-                <div className="task-summary-card__label-container">
-                    <span className="task-summary-card__badge">{tasks?.length || 0}</span>
-                    <h2 className="task-summary-card__title">Tareas de casa</h2>
-                </div>
+              
                 
                 <div className="task-summary-card__label-container">
                     <span className="task-summary-card__badge" style={{ backgroundColor: '#a978df' }}>
                         {tasksToday.length}
                     </span>
-                    <h2 className="task-summary-card__title">Hoy</h2>
+                    <h2 className="task-summary-card__title">Tareas</h2>
                 </div>
             </div>
 
@@ -32,10 +28,6 @@ export const TaskSection = ({ tasks }) => {
                     alt="Tareas de casa" 
                 />
                 
-                <div style={{ fontSize: "3.5rem", marginBottom: "10px" }}>
-                    {taskEmoji}
-                </div>
-
                 <p className="task-summary-card__task-name">
                     {firstTask?.title || firstTask?.name || "Pasear al perro"}
                 </p>

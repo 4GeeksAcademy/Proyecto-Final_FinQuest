@@ -7,14 +7,12 @@ export const RewardModal = ({ rewards, coins, onClose, onRedeem }) => {
             <div className="task-modal" onClick={e => e.stopPropagation()}>
                 <button className="task-modal__close" onClick={onClose}>✕</button>
 
-                {/* 🟢 Título que ella definió */}
                 <h2 className="task-modal__title">Tienda de Premios</h2>
 
                 <div className="task-modal__grid">
                     {rewards && rewards.length > 0 ? (
                         rewards.map(reward => (
                             <div key={reward.id} className="task-modal__item">
-                                {/* 🟢 Icono dinámico con el tamaño que ella quería */}
                                 <span className="task-modal__item-image" style={{ fontSize: "2.5rem" }}>
                                     {getCouponIcon(reward.name)}
                                 </span>
@@ -41,7 +39,6 @@ export const RewardModal = ({ rewards, coins, onClose, onRedeem }) => {
                                             : "Canjear cupón"
                                     }
                                 >
-                                    {/* 🟢 Iconos visuales más infantiles y claros (regalo vs candado) */}
                                     {coins >= reward.coins ? "🎁" : "🔒"}
                                 </button>
                             </div>

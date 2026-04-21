@@ -37,6 +37,7 @@ const CenterPanel = ({
         return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
     };
 
+
     const getTaskStatusBadge = (task) => {
         if (task.done) return { label: "Aprobada", className: "badge-approved" };
         if (task.status === 'rejected') return { label: "Rechazada", className: "badge-rejected" };
@@ -113,7 +114,8 @@ const CenterPanel = ({
                                 <button key={tab} className={`manage-item ${activeTab === tab ? 'active' : ''}`} onClick={() => handleTabChange(tab)}>{tab}</button>
                             ))}
                         </div>
-                        <button className="add-mission-btn" disabled={activeTab === 'Gran Premio' && grandPrize} onClick={() => onCreateItem(activeTab === 'Gran Premio' ? 'grand-prize' : activeTab)}>
+                        {/* Funcionalidad nuestra: Envía el tipo técnico al crear */}
+                        <button className="add-mission-btn" disabled={activeTab === 'Gran Premio' && grandPrize && !grandPrize.redeemed} onClick={() => onCreateItem(activeTab === 'Gran Premio' ? 'grand-prize' : activeTab)}>
                             {getCreateButtonLabel()}
                         </button>
                     </div>
